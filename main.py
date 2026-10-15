@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from decision_engine import process_decision
+
+import services.state_engine as state_engine
+from services.decision_engine import process_decision
 from services.outcome_engine import process_outcome
 from services.optimization_engine import optimize
 from services.loop_engine import closed_loop
-
-import state_engine
 
 app = FastAPI()
 
