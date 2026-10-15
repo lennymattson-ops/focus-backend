@@ -19,15 +19,18 @@ def root():
 def options_state():
     return {}
 
+
 @app.post("/state")
 def receive_state(state: dict):
     behavioral_state = state_engine.process(state)
     return behavioral_state
 
+from decision_engine import process_decision
 @app.post("/decision")
 def decision_engine(data: dict):
-    decision_input = data.get("decisionInput", "")
-    return {"decision": f"Decision processed: {decision_input}"}
+    decision = process_decision(data)
+    return decision
+
 
 @app.post("/outcome")
 def outcome_engine(data: dict):
