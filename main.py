@@ -21,9 +21,23 @@ def options_state():
 
 @app.post("/state")
 def receive_state(state: dict):
-    return {"received_state": state}
+    behavioral_state = state_engine.process(state)
+    return behavioral_state
 
 @app.post("/decision")
 def decision_engine(data: dict):
     decision_input = data.get("decisionInput", "")
     return {"decision": f"Decision processed: {decision_input}"}
+
+@app.post("/outcome")
+def outcome_engine(data: dict):
+    decision = data.get("decision", "")
+    return {"outcome": f"Outcome generated from: {decision}"}
+
+@app.post("/state")
+def receive_state(state: dict):
+    behavioral_state = state_engine.process(state)
+    return behavioral_state
+
+
+

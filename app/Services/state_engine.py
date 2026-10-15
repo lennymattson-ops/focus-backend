@@ -33,3 +33,32 @@ def build_behavioral_state(data):
         "sleep_quality": sleep_quality,
         "risk": round(risk, 2)
     }
+
+def process(state_input: dict):
+    text = state_input.get("yourInput", "").lower()
+
+    # Simple feature extraction
+    length = len(text)
+    has_negative_words = any(w in text for w in ["tired", "stuck", "overwhelmed", "behind"])
+    has_positive_words = any(w in text for w in ["motivated", "excited", "ready", "focused"])
+
+    # Basic classification
+    motivation_level = "medium"
+    if has_positive_words:
+        motivation_level = "high"
+    if has_negative_words:
+        motivation_level = "low"
+
+    consistency_level = "unknown"
+    engagement_level = "unknown"
+
+    # Generate behavioral state
+    behavioral_state = {
+        "motivation_level": motivation_level,
+        "engagement_level": engagement_level,
+        "consistency_level": consistency_level,
+        "input_length": length,
+        "raw_input": text
+    }
+
+    return behavioral_state
