@@ -1,7 +1,29 @@
-rom fastapi import FastAPI
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
     return {"message": "Focus Application Backend is running!"}
+
+@app.options("/state")
+def options_state():
+    return {}
+
+@app.post("/state")
+def receive_state(state: dict):
+    return {"received_state": state}
+
+@app.post("/decision")
+def decision_engine(data: dict):
+    decision_input = data.get("decisionInput", "")
+    return {"decision": f"Decision processed: {decision_input}"}
