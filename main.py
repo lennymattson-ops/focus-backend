@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import services.state_engine as state_engine
-from services.decision_engine import process_decision
-from services.outcome_engine import process_outcome
-from services.optimization_engine import optimize
-from services.loop_engine import closed_loop
+import app.Services.state_engine as state_engine
+from app.Services.decision_engine import process_decision
+from app.Services.outcome_engine import process_outcome
+from app.Services.optimization_engine import optimize
+from app.Services.loop_engine import closed_loop
+
 
 app = FastAPI()
 
