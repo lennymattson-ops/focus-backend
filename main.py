@@ -9,43 +9,64 @@ from app.Services.loop_engine import closed_loop
 
 app = FastAPI()
 
+# ---------------------------------------------------------
+# CORS — allows your actual frontend origins
+# Your browser tab shows: http://localhost
+# Vite defaults to: http://localhost:5173
+# ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ---------------------------------------------------------
+# Health check
+# ---------------------------------------------------------
 @app.get("/")
 def root():
     return {"message": "Focus Application Backend is running!"}
 
-@app.options("/state")
-def options_state():
-    return {}
-
+# ---------------------------------------------------------
+# State Engine
+# ---------------------------------------------------------
 @app.post("/state")
 def receive_state(state: dict):
-    behavioral_state = state_engine.process(state)
-    return behavioral_state
+    return state_engine.process(state)
 
+# ---------------------------------------------------------
+# Decision Engine
+# ---------------------------------------------------------
 @app.post("/decision")
 def decision_engine(data: dict):
-    decision = process_decision(data)
-    return decision
+    return process_decision(data)
 
+# ---------------------------------------------------------
+# Outcome Engine
+# ---------------------------------------------------------
 @app.post("/outcome")
 def outcome_engine(data: dict):
     return process_outcome(data)
 
+# ---------------------------------------------------------
+# Optimization Engine
+# ---------------------------------------------------------
 @app.post("/optimize")
 def optimization_endpoint(data: dict):
     interventions = data.get("interventions", [])
     effectiveness_history = data.get("effectiveness_history", {})
-    result = optimize(interventions, effectiveness_history)
-    return result
+    return optimize(interventions, effectiveness_history)
 
+# ---------------------------------------------------------
+# Closed Loop Engine
+# ---------------------------------------------------------
 @app.post("/loop")
 def loop_endpoint(data: dict):
     previous_state = data.get("previous_state", {})
@@ -54,4 +75,10 @@ def loop_endpoint(data: dict):
     effectiveness_history = data.get("effectiveness_history", {})
     completed = data.get("completed", False)
 
-    return closed_loop(previous_state, current_state, interventions, effectiveness_history, completed)
+    return closed_loop(
+        previous_state,
+        current_state,
+        interventions,
+        effectiveness_history,
+        completed
+    )
