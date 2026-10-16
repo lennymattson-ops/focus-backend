@@ -7,12 +7,11 @@ from app.Services.outcome_engine import process_outcome
 from app.Services.optimization_engine import optimize
 from app.Services.loop_engine import closed_loop
 
-
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
