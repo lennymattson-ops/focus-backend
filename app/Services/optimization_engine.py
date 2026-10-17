@@ -21,7 +21,7 @@ def update_intervention_weights(
 
         raw = effectiveness_history.get(iid, 0.5)
 
-        # ⭐ FIX: If effectiveness is a list, convert to average
+        # FIX: If effectiveness is a list, convert to average
         if isinstance(raw, list):
             effectiveness = sum(raw) / len(raw)
         else:
