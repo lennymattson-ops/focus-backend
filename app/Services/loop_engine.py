@@ -1,33 +1,41 @@
-from app.Services.decision_engine import process_decision
-from app.Services.outcome_engine import process_outcome
-from app.Services.optimization_engine import optimize
+from typing import Dict, List
 
 
-def closed_loop(previous_state, current_state, interventions, effectiveness_history, completed):
+def closed_loop(
+    previous_state: Dict,
+    current_state: Dict,
+    interventions: List[Dict],
+    effectiveness_history: Dict[str, float],
+    completed: bool
+):
     """
-    Full closed-loop behavioral optimization cycle.
+    Phase 9 Closed Loop Engine:
+    - Computes state shift
+    - Computes intervention effectiveness
+    - Returns loop result for history + dashboard
     """
 
-    # 1. Generate decision (intervention)
-    decision = process_decision(previous_state)
+    # Compute state shift
+    state_shift = {
+        "motivation_change": current_state.get("motivation", 0) - previous_state.get("motivation", 0),
+        "energy_change": current_state.get("energy", 0) - previous_state.get("energy", 0),
+        "consistency_change": current_state.get("consistency", 0) - previous_state.get("consistency", 0),
+        "risk_change": current_state.get("risk", 0) - previous_state.get("risk", 0),
+    }
 
-    # 2. Measure outcome
-    outcome_data = {
-        "previous_state": previous_state,
-        "current_state": current_state,
+    # Compute simple intervention effectiveness score
+    # (Phase 10 will replace this with predictive modeling)
+    effectiveness_score = (
+        state_shift["motivation_change"] +
+        state_shift["energy_change"] +
+        state_shift["consistency_change"] -
+        state_shift["risk_change"]
+    )
+
+    loop_result = {
+        "state_shift": state_shift,
+        "intervention_effectiveness": round(effectiveness_score, 3),
         "completed": completed
     }
-    outcome = process_outcome(outcome_data)
 
-    # 3. Update effectiveness history
-    # Use numeric_score as effectiveness
-    effectiveness_history[decision["recommended_intervention"]] = outcome["numeric_score"]
-
-    # 4. Optimize intervention weights
-    optimization_result = optimize(interventions, effectiveness_history)
-
-    return {
-        "decision": decision,
-        "outcome": outcome,
-        "optimization": optimization_result
-    }
+    return loop_result

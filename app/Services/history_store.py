@@ -1,23 +1,24 @@
 import json
-import os
+from typing import List, Dict
+from pathlib import Path
 
-HISTORY_FILE = "behavior_history.json"
+HISTORY_FILE = Path(__file__).parent.parent / "behavior_history.json"
 
-def load_history():
-    if not os.path.exists(HISTORY_FILE):
+
+def load_history() -> List[Dict]:
+    if not HISTORY_FILE.exists():
         return []
+
     try:
-        with open(HISTORY_FILE, "r") as f:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
+    except Exception:
         return []
 
-def save_history(history):
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f, indent=2)
 
-def append_record(record):
+def append_record(record: Dict):
     history = load_history()
     history.append(record)
-    save_history(history)
-    return record
+
+    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2)
