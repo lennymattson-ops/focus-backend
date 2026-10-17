@@ -9,20 +9,25 @@ def update_intervention_weights(
     """
     Adjusts intervention weights based on historical effectiveness.
 
-    interventions: list of { "id": str, "name": str, "weight": float }
-    effectiveness_history: { intervention_id: effectiveness_score }
+    interventions: list of { "name": str, "weight": float }
+    effectiveness_history: { intervention_name: float OR list[float] }
     """
 
     updated = []
 
     for intervention in interventions:
-        iid = intervention["id"]
+        iid = intervention["name"]  # use name as the identifier
         weight = intervention.get("weight", 1.0)
-        effectiveness = effectiveness_history.get(iid, 0.5)  # default neutral
 
-        # Simple update rule:
-        # - if effectiveness > 0.5 → increase weight
-        # - if effectiveness < 0.5 → decrease weight
+        raw = effectiveness_history.get(iid, 0.5)
+
+        # ⭐ FIX: If effectiveness is a list, convert to average
+        if isinstance(raw, list):
+            effectiveness = sum(raw) / len(raw)
+        else:
+            effectiveness = raw
+
+        # Update rule: move weight toward effectiveness
         delta = (effectiveness - 0.5) * learning_rate
         new_weight = max(0.0, weight + delta)
 
