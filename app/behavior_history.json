@@ -1363,5 +1363,200 @@
       "intervention_effectiveness": -1.8,
       "completed": true
     }
+  },
+  {
+    "timestamp": "2026-10-17T15:56:40.682804",
+    "previous_state": {
+      "motivation": 0,
+      "energy": 0,
+      "consistency": 0,
+      "risk": 0,
+      "flags": {
+        "low_motivation": true,
+        "low_energy": true,
+        "inconsistent": true,
+        "high_risk": false
+      }
+    },
+    "current_state": {
+      "motivation": 0.7,
+      "energy": 0.1,
+      "consistency": 0.1,
+      "risk": 0.9,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": true,
+        "inconsistent": true,
+        "high_risk": true
+      }
+    },
+    "decision": {
+      "analysis": {
+        "risks": [
+          "Low engagement"
+        ],
+        "opportunities": []
+      },
+      "recommended_intervention": "Set a tiny habit for today: something you can finish in under 3 minutes."
+    },
+    "outcome": {
+      "numeric_score": 0.18,
+      "category": "No significant change",
+      "compliance_score": 0
+    },
+    "optimize": {
+      "updated_interventions": [
+        {
+          "name": "Micro Habit",
+          "description": "Commit to a tiny, easy habit to rebuild consistency.",
+          "weight": 0.167,
+          "tags": [
+            "routine",
+            "consistency_support"
+          ]
+        },
+        {
+          "name": "Motivation Boost",
+          "description": "Use a quick motivational technique (video, quote, visualization).",
+          "weight": 0.167,
+          "tags": [
+            "motivation_support"
+          ]
+        },
+        {
+          "name": "Energy Reset",
+          "description": "Take a short break, hydration, or movement reset.",
+          "weight": 0.167,
+          "tags": [
+            "energy_support"
+          ]
+        },
+        {
+          "name": "Risk Reduction",
+          "description": "Remove distractions, reduce friction, or adjust environment.",
+          "weight": 0.167,
+          "tags": [
+            "risk_reduction"
+          ]
+        },
+        {
+          "name": "Reflection",
+          "description": "Write a quick reflection on what\u2019s working and what isn\u2019t.",
+          "weight": 0.167,
+          "tags": [
+            "motivation_support",
+            "consistency_support"
+          ]
+        },
+        {
+          "name": "Planning",
+          "description": "Create a simple plan for the next 2\u20133 hours.",
+          "weight": 0.167,
+          "tags": [
+            "routine",
+            "risk_reduction"
+          ]
+        }
+      ],
+      "selected_intervention": {
+        "name": "Micro Habit",
+        "description": "Commit to a tiny, easy habit to rebuild consistency.",
+        "weight": 0.167,
+        "tags": [
+          "routine",
+          "consistency_support"
+        ]
+      },
+      "effectiveness_history": {},
+      "drift": {
+        "motivation": "decreasing",
+        "energy": "decreasing",
+        "consistency": "decreasing",
+        "risk": "decreasing",
+        "effectiveness": "stable",
+        "intervention_fatigue": false
+      }
+    },
+    "selected_intervention": {
+      "name": "Micro Habit",
+      "description": "Commit to a tiny, easy habit to rebuild consistency.",
+      "weight": 0.167,
+      "tags": [
+        "routine",
+        "consistency_support"
+      ]
+    },
+    "updated_interventions": [
+      {
+        "name": "Micro Habit",
+        "description": "Commit to a tiny, easy habit to rebuild consistency.",
+        "weight": 0.167,
+        "tags": [
+          "routine",
+          "consistency_support"
+        ]
+      },
+      {
+        "name": "Motivation Boost",
+        "description": "Use a quick motivational technique (video, quote, visualization).",
+        "weight": 0.167,
+        "tags": [
+          "motivation_support"
+        ]
+      },
+      {
+        "name": "Energy Reset",
+        "description": "Take a short break, hydration, or movement reset.",
+        "weight": 0.167,
+        "tags": [
+          "energy_support"
+        ]
+      },
+      {
+        "name": "Risk Reduction",
+        "description": "Remove distractions, reduce friction, or adjust environment.",
+        "weight": 0.167,
+        "tags": [
+          "risk_reduction"
+        ]
+      },
+      {
+        "name": "Reflection",
+        "description": "Write a quick reflection on what\u2019s working and what isn\u2019t.",
+        "weight": 0.167,
+        "tags": [
+          "motivation_support",
+          "consistency_support"
+        ]
+      },
+      {
+        "name": "Planning",
+        "description": "Create a simple plan for the next 2\u20133 hours.",
+        "weight": 0.167,
+        "tags": [
+          "routine",
+          "risk_reduction"
+        ]
+      }
+    ],
+    "effectiveness_history": {},
+    "drift": {
+      "motivation": "decreasing",
+      "energy": "decreasing",
+      "consistency": "decreasing",
+      "risk": "decreasing",
+      "effectiveness": "stable",
+      "intervention_fatigue": false
+    },
+    "loop_result": {
+      "state_shift": {
+        "motivation_change": 0.7,
+        "energy_change": 0.1,
+        "consistency_change": 0.1,
+        "risk_change": 0.9
+      },
+      "intervention_effectiveness": -0.0,
+      "completed": true
+    }
   }
 ]

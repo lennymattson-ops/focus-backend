@@ -98,7 +98,7 @@ def loop_endpoint(data: dict):
         current_state,
         interventions,
         effectiveness_history,
-        completed,
+        completed
     )
 
     # Build daily history record
@@ -109,17 +109,11 @@ def loop_endpoint(data: dict):
         "decision": data.get("decision"),
         "outcome": data.get("outcome"),
         "optimize": data.get("optimize"),
-        "selected_intervention": data.get("optimize", {}).get(
-            "selected_intervention"
-        ),
-        "updated_interventions": data.get("optimize", {}).get(
-            "updated_interventions", []
-        ),
-        "effectiveness_history": data.get("optimize", {}).get(
-            "effectiveness_history", {}
-        ),
+        "selected_intervention": data.get("optimize", {}).get("selected_intervention"),
+        "updated_interventions": data.get("optimize", {}).get("updated_interventions", []),
+        "effectiveness_history": data.get("optimize", {}).get("effectiveness_history", {}),
         "drift": data.get("optimize", {}).get("drift", {}),
-        "loop_result": loop_result,
+        "loop_result": loop_result
     }
 
     # Append to behavioral memory
