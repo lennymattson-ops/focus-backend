@@ -10,9 +10,9 @@ from app.Services.loop_engine import closed_loop
 app = FastAPI()
 
 # ---------------------------------------------------------
-# CORS — allows your actual frontend origins
-# Your browser tab shows: http://localhost
-# Vite defaults to: http://localhost:5173
+# CORS — allow your actual frontend origins
+# Your browser uses: http://localhost
+# Vite uses: http://localhost:5173
 # ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------
-# Health check
+# Health Check
 # ---------------------------------------------------------
 @app.get("/")
 def root():
