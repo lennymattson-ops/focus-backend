@@ -22,17 +22,16 @@ app = FastAPI()
 # CORS — allow your actual frontend origins
 # ---------------------------------------------------------
 app.add_middleware(
-    CORSMiddleware(
-        allow_origins=[
-            "http://localhost",
-            "http://127.0.0.1",
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-        ],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ---------------------------------------------------------
@@ -77,7 +76,7 @@ def optimization_endpoint(data: dict):
     result = optimize(
         interventions=INTERVENTIONS,
         effectiveness_history=effectiveness_history,
-        full_history=full_history
+        full_history=full_history,
     )
 
     return result
@@ -90,4 +89,47 @@ def loop_endpoint(data: dict):
     previous_state = data.get("previous_state", {})
     current_state = data.get("current_state", {})
     interventions = data.get("interventions", INTERVENTIONS)
-    effectiveness_history = data.get("effectiveness_history
+    effectiveness_history = data.get("effectiveness_history", {})
+    completed = data.get("completed", False)
+
+    # Run closed loop engine
+    loop_result = closed_loop(
+        previous_state,
+        current_state,
+        interventions,
+        effectiveness_history,
+        completed,
+    )
+
+    # Build daily history record
+    record = {
+        "timestamp": datetime.now().isoformat(),
+        "previous_state": previous_state,
+        "current_state": current_state,
+        "decision": data.get("decision"),
+        "outcome": data.get("outcome"),
+        "optimize": data.get("optimize"),
+        "selected_intervention": data.get("optimize", {}).get(
+            "selected_intervention"
+        ),
+        "updated_interventions": data.get("optimize", {}).get(
+            "updated_interventions", []
+        ),
+        "effectiveness_history": data.get("optimize", {}).get(
+            "effectiveness_history", {}
+        ),
+        "drift": data.get("optimize", {}).get("drift", {}),
+        "loop_result": loop_result,
+    }
+
+    # Append to behavioral memory
+    append_record(record)
+
+    return loop_result
+
+# ---------------------------------------------------------
+# History Retrieval Endpoint
+# ---------------------------------------------------------
+@app.get("/history")
+def get_history():
+    return load_history()
