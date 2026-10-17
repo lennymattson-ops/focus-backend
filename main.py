@@ -7,12 +7,14 @@ from app.Services.outcome_engine import process_outcome
 from app.Services.optimization_engine import optimize
 from app.Services.loop_engine import closed_loop
 
+# NEW: Behavioral Memory Store
+from app.Services.history_store import append_record, load_history
+from datetime import datetime
+
 app = FastAPI()
 
 # ---------------------------------------------------------
 # CORS — allow your actual frontend origins
-# Your browser uses: http://localhost
-# Vite uses: http://localhost:5173
 # ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
@@ -65,7 +67,7 @@ def optimization_endpoint(data: dict):
     return optimize(interventions, effectiveness_history)
 
 # ---------------------------------------------------------
-# Closed Loop Engine
+# Closed Loop Engine + Behavioral Memory Append
 # ---------------------------------------------------------
 @app.post("/loop")
 def loop_endpoint(data: dict):
@@ -75,10 +77,34 @@ def loop_endpoint(data: dict):
     effectiveness_history = data.get("effectiveness_history", {})
     completed = data.get("completed", False)
 
-    return closed_loop(
+    # Run closed loop engine
+    loop_result = closed_loop(
         previous_state,
         current_state,
         interventions,
         effectiveness_history,
         completed
     )
+
+    # Build daily history record
+    record = {
+        "timestamp": datetime.now().isoformat(),
+        "previous_state": previous_state,
+        "current_state": current_state,
+        "decision": data.get("decision"),
+        "outcome": data.get("outcome"),
+        "optimize": data.get("optimize"),
+        "loop_result": loop_result
+    }
+
+    # Append to behavioral memory
+    append_record(record)
+
+    return loop_result
+
+# ---------------------------------------------------------
+# History Retrieval Endpoint
+# ---------------------------------------------------------
+@app.get("/history")
+def get_history():
+    return load_history()
