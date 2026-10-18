@@ -88,17 +88,23 @@ def optimization_endpoint(data: dict):
 def loop_endpoint(data: dict):
     previous_state = data.get("previous_state", {})
     current_state = data.get("current_state", {})
+    decision = data.get("decision", {})
+    outcome = data.get("outcome", {})
     interventions = data.get("interventions", INTERVENTIONS)
     effectiveness_history = data.get("effectiveness_history", {})
+    selected_intervention = data.get("selected_intervention", {})
     completed = data.get("completed", False)
 
-    # Run closed loop engine
+    # Run closed loop engine (matches your current signature)
     loop_result = closed_loop(
         previous_state,
         current_state,
+        decision,
+        outcome,
         interventions,
         effectiveness_history,
-        completed
+        selected_intervention,
+        completed,
     )
 
     # Build daily history record
@@ -106,14 +112,16 @@ def loop_endpoint(data: dict):
         "timestamp": datetime.now().isoformat(),
         "previous_state": previous_state,
         "current_state": current_state,
-        "decision": data.get("decision"),
-        "outcome": data.get("outcome"),
+        "decision": decision,
+        "outcome": outcome,
         "optimize": data.get("optimize"),
-        "selected_intervention": data.get("optimize", {}).get("selected_intervention"),
-        "updated_interventions": data.get("optimize", {}).get("updated_interventions", []),
-        "effectiveness_history": data.get("optimize", {}).get("effectiveness_history", {}),
+        "selected_intervention": selected_intervention,
+        "updated_interventions": data.get("optimize", {}).get(
+            "updated_interventions", []
+        ),
+        "effectiveness_history": effectiveness_history,
         "drift": data.get("optimize", {}).get("drift", {}),
-        "loop_result": loop_result
+        "loop_result": loop_result,
     }
 
     # Append to behavioral memory
