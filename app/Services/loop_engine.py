@@ -6,6 +6,7 @@ def closed_loop(
     current_state: Dict,
     interventions: List[Dict],
     effectiveness_history: Dict[str, float],
+    selected_intervention: Dict,
     completed: bool
 ):
     """
@@ -15,7 +16,6 @@ def closed_loop(
     - Returns loop result for history, dashboard, and optimizer.
     """
 
-    # Compute state shift between previous and current state
     state_shift = {
         "motivation_change": current_state.get("motivation", 0) - previous_state.get("motivation", 0),
         "energy_change": current_state.get("energy", 0) - previous_state.get("energy", 0),
@@ -23,7 +23,6 @@ def closed_loop(
         "risk_change": current_state.get("risk", 0) - previous_state.get("risk", 0),
     }
 
-    # Simple effectiveness score (Phase 10 can replace this)
     effectiveness_score = (
         state_shift["motivation_change"] +
         state_shift["energy_change"] +
@@ -34,11 +33,9 @@ def closed_loop(
     loop_result = {
         "state_shift": state_shift,
         "intervention_effectiveness": round(effectiveness_score, 3),
-
-        # Phase 9: pass through learning context for optimizer
         "effectiveness_history": effectiveness_history,
         "interventions": interventions,
-
+        "selected_intervention": selected_intervention,
         "completed": completed
     }
 
