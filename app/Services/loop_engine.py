@@ -4,6 +4,8 @@ from typing import Dict, List
 def closed_loop(
     previous_state: Dict,
     current_state: Dict,
+    decision: Dict,
+    outcome: Dict,
     interventions: List[Dict],
     effectiveness_history: Dict[str, float],
     selected_intervention: Dict,
@@ -16,6 +18,7 @@ def closed_loop(
     - Returns loop result for history, dashboard, and optimizer.
     """
 
+    # Compute state shift
     state_shift = {
         "motivation_change": current_state.get("motivation", 0) - previous_state.get("motivation", 0),
         "energy_change": current_state.get("energy", 0) - previous_state.get("energy", 0),
@@ -23,6 +26,7 @@ def closed_loop(
         "risk_change": current_state.get("risk", 0) - previous_state.get("risk", 0),
     }
 
+    # Compute simple intervention effectiveness score
     effectiveness_score = (
         state_shift["motivation_change"] +
         state_shift["energy_change"] +
@@ -33,9 +37,14 @@ def closed_loop(
     loop_result = {
         "state_shift": state_shift,
         "intervention_effectiveness": round(effectiveness_score, 3),
-        "effectiveness_history": effectiveness_history,
+
+        # Phase 9 required fields
+        "decision": decision,
+        "outcome": outcome,
         "interventions": interventions,
+        "effectiveness_history": effectiveness_history,
         "selected_intervention": selected_intervention,
+
         "completed": completed
     }
 
