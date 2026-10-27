@@ -8,7 +8,7 @@ from app.Services.outcome_engine import process_outcome
 from app.Services.optimization_engine import optimize
 from app.Services.loop_engine import closed_loop
 
-# Intervention set (Phase 9 Step 6)
+# Intervention set
 from app.Services.interventions import INTERVENTIONS
 
 # Behavioral Memory Store
@@ -19,7 +19,7 @@ from datetime import datetime
 app = FastAPI()
 
 # ---------------------------------------------------------
-# CORS — allow your actual frontend origins
+# CORS
 # ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
@@ -63,7 +63,7 @@ def outcome_engine(data: dict):
     return process_outcome(data)
 
 # ---------------------------------------------------------
-# Optimization Engine (Phase 9 Step 6)
+# Optimization Engine
 # ---------------------------------------------------------
 @app.post("/optimize")
 def optimization_endpoint(data: dict):
@@ -88,19 +88,39 @@ def optimization_endpoint(data: dict):
 
     return result
 
+
 # ---------------------------------------------------------
 # Closed Loop Engine + Behavioral Memory Append
 # ---------------------------------------------------------
 @app.post("/loop")
 def loop_endpoint(data: dict):
+
     previous_state = data.get("previous_state", {})
     current_state = data.get("current_state", {})
     decision = data.get("decision", {})
     outcome = data.get("outcome", {})
+
     interventions = data.get("interventions", [])
-    effectiveness_history = data.get("effectiveness_history", {})
-    selected_intervention = data.get("selected_intervention", {})
-    completed = data.get("completed", False)
+
+    effectiveness_history = data.get(
+        "effectiveness_history",
+        {}
+    )
+
+    selected_intervention = data.get(
+        "selected_intervention",
+        {}
+    )
+
+    drift = data.get(
+        "drift",
+        {}
+    )
+
+    completed = data.get(
+        "completed",
+        False
+    )
 
     # Run closed loop engine
     loop_result = closed_loop(
@@ -114,19 +134,24 @@ def loop_endpoint(data: dict):
         completed,
     )
 
-    # Build daily history record
+    # Save history record
     record = {
         "timestamp": datetime.now().isoformat(),
+
         "previous_state": previous_state,
         "current_state": current_state,
+
         "decision": decision,
         "outcome": outcome,
 
-        # Store intervention data directly
         "selected_intervention": selected_intervention,
+
         "updated_interventions": interventions,
 
         "effectiveness_history": effectiveness_history,
+
+        # NEW
+        "drift": drift,
 
         "loop_result": loop_result,
     }
@@ -134,6 +159,7 @@ def loop_endpoint(data: dict):
     append_record(record)
 
     return loop_result
+
 
 # ---------------------------------------------------------
 # History Retrieval Endpoint
