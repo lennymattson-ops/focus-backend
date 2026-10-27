@@ -67,14 +67,21 @@ def outcome_engine(data: dict):
 # ---------------------------------------------------------
 @app.post("/optimize")
 def optimization_endpoint(data: dict):
-    effectiveness_history = data.get("effectiveness_history", {})
 
-    # Load full history for drift detection
+    interventions = data.get(
+        "interventions",
+        INTERVENTIONS
+    )
+
+    effectiveness_history = data.get(
+        "effectiveness_history",
+        {}
+    )
+
     full_history = load_history()
 
-    # Use standard intervention set
     result = optimize(
-        interventions=INTERVENTIONS,
+        interventions=interventions,
         effectiveness_history=effectiveness_history,
         full_history=full_history,
     )
