@@ -39,15 +39,13 @@ def classify_outcome(score):
         return "Moderate regression"
     return "Strong regression"
 
-
 def measure_compliance(data):
-    """
-    Basic compliance scoring.
-    """
+    current_state = data.get("current_state", {})
 
-    completed = data.get("completed", True)
-    return 1.0 if completed else 0.0
-
+    return round(
+        current_state.get("consistency", 0),
+        2
+    )
 
 def process_outcome(data):
     """
