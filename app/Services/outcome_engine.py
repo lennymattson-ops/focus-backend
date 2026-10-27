@@ -45,7 +45,7 @@ def measure_compliance(data):
     Basic compliance scoring.
     """
 
-    completed = data.get("completed", False)
+    completed = data.get("completed", True)
     return 1.0 if completed else 0.0
 
 
