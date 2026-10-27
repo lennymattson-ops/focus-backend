@@ -22,7 +22,10 @@ def update_intervention_weights(
         name = intervention["name"]
         weight = intervention.get("weight", 1.0)
 
-        raw = effectiveness_history.get(name, 0.5)
+        raw = effectiveness_history.get(
+            name,
+            effectiveness_history.get("overall", 0.5)
+        )
 
         if isinstance(raw, list):
             effectiveness = sum(raw) / len(raw) if len(raw) > 0 else 0.5
