@@ -125,12 +125,22 @@ def drift_aware_score(
     return score
 
 
+import random
+
+
 def select_intervention(
     interventions: List[Dict],
-    drift: Dict
+    drift: Dict,
+    exploration_rate: float = 0.15
 ):
     """
-    Select best intervention after drift adjustments.
+    Phase 9.2 Exploration Strategy
+
+    85%:
+        Choose the best intervention
+
+    15%:
+        Explore a different intervention
     """
 
     if not interventions:
@@ -147,12 +157,25 @@ def select_intervention(
         for intervention in interventions
     ]
 
-    best, _ = max(
-        scored,
-        key=lambda x: x[1]
+    scored.sort(
+        key=lambda x: x[1],
+        reverse=True
     )
 
-    return best
+    # Exploration
+    if random.random() < exploration_rate:
+
+        # Choose from everything except current best
+        alternatives = [
+            item[0]
+            for item in scored[1:]
+        ]
+
+        if alternatives:
+            return random.choice(alternatives)
+
+    # Exploitation (normal behavior)
+    return scored[0][0]
 
 
 def optimize(
