@@ -10,7 +10,7 @@ def update_intervention_weights(
     learning_rate: float = 0.05,
 ):
     """
-    Phase 9.3.1 Learning Engine
+    Phase 9.5 Learning Engine
 
     Long-term memory:
         weight
@@ -18,10 +18,8 @@ def update_intervention_weights(
     Short-term memory:
         confidence
 
-    Only the selected intervention is rewarded
-    or penalized based on effectiveness.
-
-    All weights are normalized after updates.
+    Repetition memory:
+        fatigue
     """
 
     updated = []
@@ -44,9 +42,17 @@ def update_intervention_weights(
             0.0
         )
 
+        current_fatigue = intervention.get(
+            "fatigue",
+            0
+        )
+
         new_weight = current_weight
+
         # Phase 9.4 Confidence Decay
-        new_confidence = current_confidence *0.90
+        new_confidence = current_confidence * 0.90
+
+        new_fatigue = current_fatigue
 
         if intervention["name"] == selected_name:
 
@@ -57,6 +63,17 @@ def update_intervention_weights(
             # Phase 9.3.1 Confidence Scaling
             confidence_delta = overall * 0.02
             new_confidence += confidence_delta
+
+            # Phase 9.5 Fatigue Build-Up
+            new_fatigue += 1
+
+        else:
+
+            # Recover fatigue for unused interventions
+            new_fatigue = max(
+                0,
+                current_fatigue - 1
+            )
 
         # Weight protection
         new_weight = max(
@@ -70,10 +87,17 @@ def update_intervention_weights(
             min(new_confidence, 0.25)
         )
 
+        # Fatigue protection
+        new_fatigue = min(
+            new_fatigue,
+            10
+        )
+
         updated.append({
             **intervention,
             "weight": round(new_weight, 3),
-            "confidence": round(new_confidence, 3)
+            "confidence": round(new_confidence, 3),
+            "fatigue": new_fatigue
         })
 
     total = sum(
@@ -107,15 +131,22 @@ def drift_aware_score(
     """
     Final ranking score.
 
-    Uses:
-    - Weight (long-term learning)
-    - Confidence (recent success)
+    Components:
+    - Weight
+    - Confidence
+    - Fatigue penalty
     - Drift bonuses
     """
+
+    fatigue_penalty = (
+        intervention.get("fatigue", 0)
+        * 0.04
+    )
 
     score = (
         intervention.get("weight", 0)
         + intervention.get("confidence", 0)
+        - fatigue_penalty
     )
 
     tags = intervention.get(
@@ -153,13 +184,10 @@ def select_intervention(
     exploration_rate: float = 0.15,
 ):
     """
-    Phase 9.2 + 9.3 + 9.3.1
+    Phase 9.2 + 9.3 + 9.4 + 9.5
 
-    85%:
-        exploit best option
-
-    15%:
-        explore alternatives
+    85% exploit
+    15% explore
     """
 
     if not interventions:
@@ -181,7 +209,7 @@ def select_intervention(
         reverse=True
     )
 
-    # Exploration Mode
+    # Exploration mode
     if random.random() < exploration_rate:
 
         alternatives = [
@@ -192,7 +220,7 @@ def select_intervention(
         if alternatives:
             return random.choice(alternatives)
 
-    # Exploitation Mode
+    # Exploitation mode
     return scored[0][0]
 
 
@@ -202,7 +230,7 @@ def optimize(
     full_history: List[Dict] = None,
 ):
     """
-    Phase 9.3.1 Optimization Pipeline
+    Phase 9.5 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
