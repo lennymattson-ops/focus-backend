@@ -1,4 +1,6 @@
 from typing import List, Dict
+import random
+
 from app.Services.drift_detector import detect_behavioral_drift
 
 
@@ -8,19 +10,18 @@ def update_intervention_weights(
     learning_rate: float = 0.05,
 ):
     """
-    Phase 9.1 Learning Engine
+    Phase 9.3.1 Learning Engine
 
-    Only the selected intervention is rewarded or penalized.
+    Long-term memory:
+        weight
 
-    Positive effectiveness:
-        selected intervention weight increases
+    Short-term memory:
+        confidence
 
-    Negative effectiveness:
-        selected intervention weight decreases
+    Only the selected intervention is rewarded
+    or penalized based on effectiveness.
 
-    Remaining interventions stay unchanged.
-
-    Finally normalize weights so total = 1.
+    All weights are normalized after updates.
     """
 
     updated = []
@@ -38,27 +39,42 @@ def update_intervention_weights(
             0.167
         )
 
-        new_weight = current_weight
+        current_confidence = intervention.get(
+            "confidence",
+            0.0
+        )
 
-        # ONLY update the intervention that was used
+        new_weight = current_weight
+        new_confidence = current_confidence
+
         if intervention["name"] == selected_name:
 
+            # Long-term learning
             adjustment = overall * learning_rate
-
             new_weight = current_weight + adjustment
 
-        # Prevent collapse
+            # Phase 9.3.1 Confidence Scaling
+            confidence_delta = overall * 0.02
+            new_confidence += confidence_delta
+
+        # Weight protection
         new_weight = max(
             0.05,
             min(new_weight, 1.0)
         )
 
+        # Confidence protection
+        new_confidence = max(
+            -0.25,
+            min(new_confidence, 0.25)
+        )
+
         updated.append({
             **intervention,
-            "weight": round(new_weight, 3)
+            "weight": round(new_weight, 3),
+            "confidence": round(new_confidence, 3)
         })
 
-    # Normalize weights
     total = sum(
         i["weight"]
         for i in updated
@@ -88,12 +104,17 @@ def drift_aware_score(
     drift: Dict
 ):
     """
-    Boost interventions that match drift signals.
+    Final ranking score.
+
+    Uses:
+    - Weight (long-term learning)
+    - Confidence (recent success)
+    - Drift bonuses
     """
 
-    score = intervention.get(
-        "weight",
-        0
+    score = (
+        intervention.get("weight", 0)
+        + intervention.get("confidence", 0)
     )
 
     tags = intervention.get(
@@ -125,22 +146,19 @@ def drift_aware_score(
     return score
 
 
-import random
-
-
 def select_intervention(
     interventions: List[Dict],
     drift: Dict,
-    exploration_rate: float = 0.15
+    exploration_rate: float = 0.15,
 ):
     """
-    Phase 9.2 Exploration Strategy
+    Phase 9.2 + 9.3 + 9.3.1
 
     85%:
-        Choose the best intervention
+        exploit best option
 
     15%:
-        Explore a different intervention
+        explore alternatives
     """
 
     if not interventions:
@@ -162,10 +180,9 @@ def select_intervention(
         reverse=True
     )
 
-    # Exploration
+    # Exploration Mode
     if random.random() < exploration_rate:
 
-        # Choose from everything except current best
         alternatives = [
             item[0]
             for item in scored[1:]
@@ -174,7 +191,7 @@ def select_intervention(
         if alternatives:
             return random.choice(alternatives)
 
-    # Exploitation (normal behavior)
+    # Exploitation Mode
     return scored[0][0]
 
 
@@ -184,7 +201,7 @@ def optimize(
     full_history: List[Dict] = None,
 ):
     """
-    Phase 9.1 Optimization Pipeline
+    Phase 9.3.1 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
