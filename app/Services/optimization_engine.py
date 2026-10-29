@@ -45,7 +45,8 @@ def update_intervention_weights(
         )
 
         new_weight = current_weight
-        new_confidence = current_confidence
+        # Phase 9.4 Confidence Decay
+        new_confidence = current_confidence *0.90
 
         if intervention["name"] == selected_name:
 
