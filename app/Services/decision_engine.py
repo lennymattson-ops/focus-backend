@@ -1,25 +1,56 @@
 def analyze_behavioral_state(state):
     """
-    Analyze the behavioral state and identify risks + opportunities.
+    Analyze behavioral state and generate
+    dynamic risks/opportunities from actual metrics.
     """
 
-    motivation = state.get("motivation_level", "medium")
-    length = state.get("input_length", 0)
+    motivation = state.get("motivation", 0.5)
+    energy = state.get("energy", 0.5)
+    consistency = state.get("consistency", 0.5)
+    risk = state.get("risk", 0.5)
 
     risks = []
     opportunities = []
 
-    # Risk detection
-    if motivation == "low":
-        risks.append("Low motivation")
-    if length < 10:
-        risks.append("Low engagement")
+    # --------------------------
+    # Risk Detection
+    # --------------------------
 
-    # Opportunity detection
-    if motivation == "high":
-        opportunities.append("Strong motivation — good time to push goals")
-    if length > 50:
-        opportunities.append("High engagement — user is expressive")
+    if motivation < 0.3:
+        risks.append("Low motivation")
+
+    if energy < 0.3:
+        risks.append("Low energy")
+
+    if consistency < 0.3:
+        risks.append("Inconsistent behavior")
+
+    if risk > 0.7:
+        risks.append("High risk")
+
+    # --------------------------
+    # Opportunity Detection
+    # --------------------------
+
+    if motivation > 0.7:
+        opportunities.append(
+            "High motivation available"
+        )
+
+    if energy > 0.7:
+        opportunities.append(
+            "High energy available"
+        )
+
+    if consistency > 0.7:
+        opportunities.append(
+            "Strong consistency trend"
+        )
+
+    if risk < 0.3:
+        opportunities.append(
+            "Low risk environment"
+        )
 
     return {
         "risks": risks,
@@ -29,41 +60,76 @@ def analyze_behavioral_state(state):
 
 def generate_intervention(analysis):
     """
-    Generate an intervention based on detected risks/opportunities.
+    Select intervention based on highest-priority risk.
     """
 
     risks = analysis["risks"]
     opportunities = analysis["opportunities"]
 
-    # Priority: address risks first
+    if "High risk" in risks:
+        return (
+            "Reduce friction. Remove one obstacle "
+            "or distraction before starting work."
+        )
+
+    if "Low energy" in risks:
+        return (
+            "Take a short reset: hydration, movement, "
+            "or a 5-minute break."
+        )
+
     if "Low motivation" in risks:
-        return "Write a 2-minute reflection: Why does your goal matter today?"
+        return (
+            "Write a short reminder of why your goal "
+            "matters today."
+        )
 
-    if "Low engagement" in risks:
-        return "Set a tiny habit for today: something you can finish in under 3 minutes."
+    if "Inconsistent behavior" in risks:
+        return (
+            "Choose a tiny habit you can complete "
+            "in under 3 minutes."
+        )
 
-    # If no risks, use opportunities
-    if "Strong motivation — good time to push goals" in opportunities:
-        return "Choose one important task and commit to finishing it today."
+    if "High motivation available" in opportunities:
+        return (
+            "Use your momentum. Choose one meaningful "
+            "task and finish it today."
+        )
 
-    if "High engagement — user is expressive" in opportunities:
-        return "Increase your habit difficulty slightly — you're ready."
+    if "High energy available" in opportunities:
+        return (
+            "Tackle a challenging task while energy "
+            "is elevated."
+        )
 
-    # Default fallback
-    return "Everything looks stable. Maintain your current routine."
+    if "Strong consistency trend" in opportunities:
+        return (
+            "Increase your habit difficulty slightly."
+        )
+
+    if "Low risk environment" in opportunities:
+        return (
+            "This is a good time to pursue a larger goal."
+        )
+
+    return (
+        "Everything looks stable. Maintain your "
+        "current routine."
+    )
 
 
 def process_decision(state):
     """
-    Full decision engine pipeline:
-    - analyze behavioral state
-    - generate intervention
+    Full decision engine pipeline.
     """
 
     analysis = analyze_behavioral_state(state)
-    intervention = generate_intervention(analysis)
+
+    intervention = generate_intervention(
+        analysis
+    )
 
     return {
         "analysis": analysis,
-        "recommended_intervention": intervention
+        "recommended_intervention": intervention,
     }
