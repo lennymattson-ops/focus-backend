@@ -41,12 +41,14 @@ app.add_middleware(
 def root():
     return {"message": "Focus Application Backend is running!"}
 
+
 # ---------------------------------------------------------
 # State Engine
 # ---------------------------------------------------------
 @app.post("/state")
 def receive_state(state: dict):
     return state_engine.process(state)
+
 
 # ---------------------------------------------------------
 # Decision Engine
@@ -55,12 +57,14 @@ def receive_state(state: dict):
 def decision_engine(data: dict):
     return process_decision(data)
 
+
 # ---------------------------------------------------------
 # Outcome Engine
 # ---------------------------------------------------------
 @app.post("/outcome")
 def outcome_engine(data: dict):
     return process_outcome(data)
+
 
 # ---------------------------------------------------------
 # Optimization Engine
@@ -78,12 +82,20 @@ def optimization_endpoint(data: dict):
         {}
     )
 
+    # Phase 10.5
+    # Decision Engine → Optimizer alignment
+    decision_analysis = data.get(
+        "decision_analysis",
+        {}
+    )
+
     full_history = load_history()
 
     result = optimize(
         interventions=interventions,
         effectiveness_history=effectiveness_history,
         full_history=full_history,
+        decision_analysis=decision_analysis,
     )
 
     return result
@@ -100,7 +112,10 @@ def loop_endpoint(data: dict):
     decision = data.get("decision", {})
     outcome = data.get("outcome", {})
 
-    interventions = data.get("interventions", [])
+    interventions = data.get(
+        "interventions",
+        []
+    )
 
     effectiveness_history = data.get(
         "effectiveness_history",
@@ -150,7 +165,7 @@ def loop_endpoint(data: dict):
 
         "effectiveness_history": effectiveness_history,
 
-        # NEW
+        # Phase 10.1+
         "drift": drift,
 
         "loop_result": loop_result,

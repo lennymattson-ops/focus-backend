@@ -10,7 +10,7 @@ def update_intervention_weights(
     learning_rate: float = 0.05,
 ):
     """
-    Phase 9.5 Learning Engine
+    Learning Engine
 
     Long-term memory:
         weight
@@ -24,7 +24,10 @@ def update_intervention_weights(
 
     updated = []
 
-    overall = effectiveness_history.get("overall", 0)
+    overall = effectiveness_history.get(
+        "overall",
+        0
+    )
 
     selected_name = effectiveness_history.get(
         "selected_intervention"
@@ -49,45 +52,51 @@ def update_intervention_weights(
 
         new_weight = current_weight
 
-        # Phase 9.4 Confidence Decay
-        new_confidence = current_confidence * 0.90
+        # Confidence decay
+        new_confidence = (
+            current_confidence * 0.90
+        )
 
         new_fatigue = current_fatigue
 
         if intervention["name"] == selected_name:
 
-            # Long-term learning
-            adjustment = overall * learning_rate
-            new_weight = current_weight + adjustment
+            adjustment = (
+                overall * learning_rate
+            )
 
-            # Phase 9.3.1 Confidence Scaling
-            confidence_delta = overall * 0.02
+            new_weight = (
+                current_weight
+                + adjustment
+            )
+
+            confidence_delta = (
+                overall * 0.02
+            )
+
             new_confidence += confidence_delta
 
-            # Phase 9.5 Fatigue Build-Up
+            # Fatigue build-up
             new_fatigue += 1
 
         else:
 
-            # Recover fatigue for unused interventions
+            # Fatigue recovery
             new_fatigue = max(
                 0,
                 current_fatigue - 1
             )
 
-        # Weight protection
         new_weight = max(
             0.05,
             min(new_weight, 1.0)
         )
 
-        # Confidence protection
         new_confidence = max(
             -0.25,
             min(new_confidence, 0.25)
         )
 
-        # Fatigue protection
         new_fatigue = min(
             new_fatigue,
             10
@@ -95,8 +104,14 @@ def update_intervention_weights(
 
         updated.append({
             **intervention,
-            "weight": round(new_weight, 3),
-            "confidence": round(new_confidence, 3),
+            "weight": round(
+                new_weight,
+                3
+            ),
+            "confidence": round(
+                new_confidence,
+                3
+            ),
             "fatigue": new_fatigue
         })
 
@@ -114,7 +129,8 @@ def update_intervention_weights(
             normalized.append({
                 **intervention,
                 "weight": round(
-                    intervention["weight"] / total,
+                    intervention["weight"]
+                    / total,
                     3
                 )
             })
@@ -126,7 +142,8 @@ def update_intervention_weights(
 
 def drift_aware_score(
     intervention: Dict,
-    drift: Dict
+    drift: Dict,
+    analysis: Dict = None,
 ):
     """
     Final ranking score.
@@ -134,8 +151,9 @@ def drift_aware_score(
     Components:
     - Weight
     - Confidence
-    - Fatigue penalty
+    - Fatigue
     - Drift bonuses
+    - Decision alignment bonuses
     """
 
     fatigue = intervention.get(
@@ -143,10 +161,11 @@ def drift_aware_score(
         0
     )
 
-    # Phase 10.4 Fatigue-Aware Selection
-    fatigue_penalty = fatigue * 0.08
+    # Phase 10.4
+    fatigue_penalty = (
+        fatigue * 0.08
+    )
 
-    # Exhaustion penalties
     if fatigue >= 4:
         fatigue_penalty += 0.15
 
@@ -154,8 +173,14 @@ def drift_aware_score(
         fatigue_penalty += 0.10
 
     score = (
-        intervention.get("weight", 0)
-        + intervention.get("confidence", 0)
+        intervention.get(
+            "weight",
+            0
+        )
+        + intervention.get(
+            "confidence",
+            0
+        )
         - fatigue_penalty
     )
 
@@ -164,27 +189,93 @@ def drift_aware_score(
         []
     )
 
+    # -------------------------
+    # Drift Bonuses
+    # -------------------------
+
     if (
-        drift.get("motivation") == "decreasing"
-        and "motivation_support" in tags
+        drift.get("motivation")
+        == "decreasing"
+        and
+        "motivation_support"
+        in tags
     ):
         score += 0.10
 
     if (
-        drift.get("consistency") == "decreasing"
-        and "routine" in tags
+        drift.get("consistency")
+        == "decreasing"
+        and
+        "routine"
+        in tags
     ):
         score += 0.10
 
     if (
-        drift.get("risk") == "increasing"
-        and "risk_reduction" in tags
+        drift.get("risk")
+        == "increasing"
+        and
+        "risk_reduction"
+        in tags
     ):
         score += 0.10
 
-    # Phase 10.4 Global Fatigue Response
-    if drift.get("intervention_fatigue"):
+    if drift.get(
+        "intervention_fatigue"
+    ):
         score -= 0.15
+
+    # -------------------------
+    # Phase 10.5
+    # Decision Alignment
+    # -------------------------
+
+    if analysis:
+
+        risks = analysis.get(
+            "risks",
+            []
+        )
+
+        if (
+            "Low motivation"
+            in risks
+            and
+            "motivation_support"
+            in tags
+        ):
+            score += 0.15
+
+        if (
+            "Low energy"
+            in risks
+            and
+            "energy_support"
+            in tags
+        ):
+            score += 0.15
+
+        if (
+            "Inconsistent behavior"
+            in risks
+            and (
+                "routine"
+                in tags
+                or
+                "consistency_support"
+                in tags
+            )
+        ):
+            score += 0.15
+
+        if (
+            "High risk"
+            in risks
+            and
+            "risk_reduction"
+            in tags
+        ):
+            score += 0.15
 
     return score
 
@@ -192,10 +283,11 @@ def drift_aware_score(
 def select_intervention(
     interventions: List[Dict],
     drift: Dict,
+    analysis: Dict = None,
     exploration_rate: float = 0.15,
 ):
     """
-    Phase 9.2 + 9.3 + 9.4 + 9.5 + 10.4
+    Phase 10.5 Selection Engine
 
     85% exploit
     15% explore
@@ -209,7 +301,8 @@ def select_intervention(
             intervention,
             drift_aware_score(
                 intervention,
-                drift
+                drift,
+                analysis
             )
         )
         for intervention in interventions
@@ -220,8 +313,10 @@ def select_intervention(
         reverse=True
     )
 
-    # Exploration mode
-    if random.random() < exploration_rate:
+    if (
+        random.random()
+        < exploration_rate
+    ):
 
         alternatives = [
             item[0]
@@ -229,9 +324,10 @@ def select_intervention(
         ]
 
         if alternatives:
-            return random.choice(alternatives)
+            return random.choice(
+                alternatives
+            )
 
-    # Exploitation mode
     return scored[0][0]
 
 
@@ -239,9 +335,10 @@ def optimize(
     interventions: List[Dict],
     effectiveness_history: Dict[str, float],
     full_history: List[Dict] = None,
+    decision_analysis: Dict = None,
 ):
     """
-    Phase 10.4 Optimization Pipeline
+    Phase 10.5 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
@@ -255,7 +352,8 @@ def optimize(
 
     best = select_intervention(
         updated,
-        drift
+        drift,
+        decision_analysis,
     )
 
     return {
