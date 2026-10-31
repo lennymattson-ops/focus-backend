@@ -138,10 +138,20 @@ def drift_aware_score(
     - Drift bonuses
     """
 
-    fatigue_penalty = (
-        intervention.get("fatigue", 0)
-        * 0.04
+    fatigue = intervention.get(
+        "fatigue",
+        0
     )
+
+    # Phase 10.4 Fatigue-Aware Selection
+    fatigue_penalty = fatigue * 0.08
+
+    # Exhaustion penalties
+    if fatigue >= 4:
+        fatigue_penalty += 0.15
+
+    if fatigue >= 6:
+        fatigue_penalty += 0.10
 
     score = (
         intervention.get("weight", 0)
@@ -172,8 +182,9 @@ def drift_aware_score(
     ):
         score += 0.10
 
+    # Phase 10.4 Global Fatigue Response
     if drift.get("intervention_fatigue"):
-        score -= 0.05
+        score -= 0.15
 
     return score
 
@@ -184,7 +195,7 @@ def select_intervention(
     exploration_rate: float = 0.15,
 ):
     """
-    Phase 9.2 + 9.3 + 9.4 + 9.5
+    Phase 9.2 + 9.3 + 9.4 + 9.5 + 10.4
 
     85% exploit
     15% explore
@@ -230,7 +241,7 @@ def optimize(
     full_history: List[Dict] = None,
 ):
     """
-    Phase 9.5 Optimization Pipeline
+    Phase 10.4 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
