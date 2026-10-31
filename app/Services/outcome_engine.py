@@ -22,21 +22,28 @@ def calculate_outcome(previous_state, new_state):
 
 def classify_outcome(score):
     """
-    Converts a numeric score into a human-readable category.
+    Classify outcome scores generated from
+    normalized behavioral state changes.
     """
 
-    if score >= 50:
+    if score >= 0.40:
         return "Strong improvement"
-    if score >= 20:
-        return "Moderate improvement"
-    if score >= 5:
-        return "Slight improvement"
-    if score > -5:
+
+    if score >= 0.20:
+        return "Improvement"
+
+    if score >= 0.05:
+        return "Minor improvement"
+
+    if score > -0.05:
         return "No significant change"
-    if score > -20:
-        return "Slight regression"
-    if score > -50:
-        return "Moderate regression"
+
+    if score > -0.20:
+        return "Minor regression"
+
+    if score > -0.40:
+        return "Regression"
+
     return "Strong regression"
 
 def measure_compliance(data):
