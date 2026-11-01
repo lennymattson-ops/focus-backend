@@ -2,8 +2,6 @@ from typing import List, Dict
 import random
 
 from app.Services.drift_detector import detect_behavioral_drift
-
-
 # ---------------------------------------------------------
 # Phase 10.8
 # Starvation Protection
@@ -162,7 +160,6 @@ def update_intervention_weights(
 
     return updated
 
-
 def drift_aware_score(
     intervention: Dict,
     drift: Dict,
@@ -185,19 +182,25 @@ def drift_aware_score(
     )
 
     # -------------------------------------------------
-    # Phase 10.8
-    # Stronger Fatigue Balancing
+    # Phase 11.0
+    # Adaptive Fatigue Scaling
     # -------------------------------------------------
 
     fatigue_penalty = (
-        fatigue * 0.12
+        fatigue * 0.15
     )
 
-    if fatigue >= 4:
-        fatigue_penalty += 0.20
-
-    if fatigue >= 6:
+    # Medium fatigue
+    if fatigue >= 3:
         fatigue_penalty += 0.15
+
+    # Heavy fatigue
+    if fatigue >= 5:
+        fatigue_penalty += 0.25
+
+    # Severe fatigue
+    if fatigue >= 7:
+        fatigue_penalty += 0.35
 
     score = (
         intervention.get(
@@ -304,7 +307,6 @@ def drift_aware_score(
             score += 0.15
 
     return score
-
 
 def select_intervention(
     interventions: List[Dict],
