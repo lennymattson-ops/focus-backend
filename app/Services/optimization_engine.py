@@ -4,6 +4,14 @@ import random
 from app.Services.drift_detector import detect_behavioral_drift
 
 
+# ---------------------------------------------------------
+# Phase 10.8
+# Starvation Protection
+# ---------------------------------------------------------
+
+MIN_WEIGHT_FLOOR = 0.08
+
+
 def update_intervention_weights(
     interventions: List[Dict],
     effectiveness_history: Dict[str, float],
@@ -87,8 +95,10 @@ def update_intervention_weights(
                 current_fatigue - 1
             )
 
+        # Phase 10.8
+        # Starvation Protection
         new_weight = max(
-            0.05,
+            MIN_WEIGHT_FLOOR,
             min(new_weight, 1.0)
         )
 
@@ -161,16 +171,20 @@ def drift_aware_score(
         0
     )
 
-    # Phase 10.4
+    # -------------------------------------------------
+    # Phase 10.8
+    # Stronger Fatigue Balancing
+    # -------------------------------------------------
+
     fatigue_penalty = (
-        fatigue * 0.08
+        fatigue * 0.12
     )
 
     if fatigue >= 4:
-        fatigue_penalty += 0.15
+        fatigue_penalty += 0.20
 
     if fatigue >= 6:
-        fatigue_penalty += 0.10
+        fatigue_penalty += 0.15
 
     score = (
         intervention.get(
@@ -338,7 +352,7 @@ def optimize(
     decision_analysis: Dict = None,
 ):
     """
-    Phase 10.5 Optimization Pipeline
+    Phase 10.8 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
