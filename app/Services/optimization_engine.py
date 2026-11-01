@@ -78,9 +78,19 @@ def update_intervention_weights(
                 + adjustment
             )
 
+            # -------------------------------------------------
+            # Phase 10.9
+            # Confidence Momentum
+            # -------------------------------------------------
+
             confidence_delta = (
-                overall * 0.02
+                overall * 0.05
             )
+
+            # Strong outcomes should
+            # produce stronger confidence shifts.
+            if abs(overall) >= 1.5:
+                confidence_delta *= 1.25
 
             new_confidence += confidence_delta
 
@@ -95,8 +105,11 @@ def update_intervention_weights(
                 current_fatigue - 1
             )
 
+        # -------------------------------------------------
         # Phase 10.8
         # Starvation Protection
+        # -------------------------------------------------
+
         new_weight = max(
             MIN_WEIGHT_FLOOR,
             min(new_weight, 1.0)
@@ -240,7 +253,6 @@ def drift_aware_score(
         score -= 0.15
 
     # -------------------------
-    # Phase 10.5
     # Decision Alignment
     # -------------------------
 
@@ -301,7 +313,7 @@ def select_intervention(
     exploration_rate: float = 0.15,
 ):
     """
-    Phase 10.5 Selection Engine
+    Selection Engine
 
     85% exploit
     15% explore
@@ -352,7 +364,7 @@ def optimize(
     decision_analysis: Dict = None,
 ):
     """
-    Phase 10.8 Optimization Pipeline
+    Phase 10.9 Optimization Pipeline
     """
 
     updated = update_intervention_weights(
