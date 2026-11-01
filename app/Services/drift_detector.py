@@ -37,6 +37,7 @@ def compute_trend(values: List[float]) -> str:
     """
 
     if len(values) < WINDOW_SIZE * 2:
+
         if len(values) < 2:
             return "stable"
 
@@ -55,7 +56,33 @@ def compute_trend(values: List[float]) -> str:
     return classify_delta(delta)
 
 
-def detect_behavioral_drift(history: List[Dict]) -> Dict:
+def compute_effectiveness_trend(
+    effectiveness_values: List[float],
+) -> str:
+    """
+    Phase 10.6
+
+    Effectiveness should react quickly.
+
+    Rather than comparing large windows,
+    compare the two most recent outcomes.
+    """
+
+    if len(effectiveness_values) < 2:
+        return "stable"
+
+    delta = (
+        effectiveness_values[-1]
+        - effectiveness_values[-2]
+    )
+
+    return classify_delta(delta)
+
+
+def detect_behavioral_drift(
+    history: List[Dict],
+) -> Dict:
+
     if len(history) < 2:
         return {
             "motivation": "stable",
@@ -87,16 +114,38 @@ def detect_behavioral_drift(history: List[Dict]) -> Dict:
     ]
 
     effectiveness_values = [
-        h.get("effectiveness_history", {}).get("overall", 0)
+        h.get("effectiveness_history", {}).get(
+            "overall",
+            0
+        )
         for h in history
     ]
 
     drift = {
-        "motivation": compute_trend(motivation_values),
-        "energy": compute_trend(energy_values),
-        "consistency": compute_trend(consistency_values),
-        "risk": compute_trend(risk_values),
-        "effectiveness": compute_trend(effectiveness_values),
+        "motivation":
+            compute_trend(
+                motivation_values
+            ),
+
+        "energy":
+            compute_trend(
+                energy_values
+            ),
+
+        "consistency":
+            compute_trend(
+                consistency_values
+            ),
+
+        "risk":
+            compute_trend(
+                risk_values
+            ),
+
+        "effectiveness":
+            compute_effectiveness_trend(
+                effectiveness_values
+            ),
     }
 
     recent_effectiveness = (
@@ -106,7 +155,8 @@ def detect_behavioral_drift(history: List[Dict]) -> Dict:
     )
 
     average_effectiveness = (
-        sum(recent_effectiveness) / len(recent_effectiveness)
+        sum(recent_effectiveness)
+        / len(recent_effectiveness)
         if recent_effectiveness
         else 0
     )

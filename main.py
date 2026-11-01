@@ -21,6 +21,7 @@ app = FastAPI()
 # ---------------------------------------------------------
 # CORS
 # ---------------------------------------------------------
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -37,14 +38,18 @@ app.add_middleware(
 # ---------------------------------------------------------
 # Health Check
 # ---------------------------------------------------------
+
 @app.get("/")
 def root():
-    return {"message": "Focus Application Backend is running!"}
+    return {
+        "message": "Focus Application Backend is running!"
+    }
 
 
 # ---------------------------------------------------------
 # State Engine
 # ---------------------------------------------------------
+
 @app.post("/state")
 def receive_state(state: dict):
     return state_engine.process(state)
@@ -53,6 +58,7 @@ def receive_state(state: dict):
 # ---------------------------------------------------------
 # Decision Engine
 # ---------------------------------------------------------
+
 @app.post("/decision")
 def decision_engine(data: dict):
     return process_decision(data)
@@ -61,6 +67,7 @@ def decision_engine(data: dict):
 # ---------------------------------------------------------
 # Outcome Engine
 # ---------------------------------------------------------
+
 @app.post("/outcome")
 def outcome_engine(data: dict):
     return process_outcome(data)
@@ -69,6 +76,7 @@ def outcome_engine(data: dict):
 # ---------------------------------------------------------
 # Optimization Engine
 # ---------------------------------------------------------
+
 @app.post("/optimize")
 def optimization_endpoint(data: dict):
 
@@ -82,8 +90,6 @@ def optimization_endpoint(data: dict):
         {}
     )
 
-    # Phase 10.5
-    # Decision Engine → Optimizer alignment
     decision_analysis = data.get(
         "decision_analysis",
         {}
@@ -104,6 +110,7 @@ def optimization_endpoint(data: dict):
 # ---------------------------------------------------------
 # Closed Loop Engine + Behavioral Memory Append
 # ---------------------------------------------------------
+
 @app.post("/loop")
 def loop_endpoint(data: dict):
 
@@ -137,7 +144,7 @@ def loop_endpoint(data: dict):
         False
     )
 
-    # Run closed loop engine
+    # Run Closed Loop Engine
     loop_result = closed_loop(
         previous_state,
         current_state,
@@ -149,7 +156,7 @@ def loop_endpoint(data: dict):
         completed,
     )
 
-    # Save history record
+    # Save synchronized history record
     record = {
         "timestamp": datetime.now().isoformat(),
 
@@ -159,13 +166,21 @@ def loop_endpoint(data: dict):
         "decision": decision,
         "outcome": outcome,
 
-        "selected_intervention": selected_intervention,
+        "selected_intervention": loop_result.get(
+            "selected_intervention",
+            selected_intervention
+        ),
 
-        "updated_interventions": interventions,
+        "updated_interventions": loop_result.get(
+            "interventions",
+            interventions
+        ),
 
-        "effectiveness_history": effectiveness_history,
+        "effectiveness_history": loop_result.get(
+            "effectiveness_history",
+            {}
+        ),
 
-        # Phase 10.1+
         "drift": drift,
 
         "loop_result": loop_result,
@@ -179,6 +194,7 @@ def loop_endpoint(data: dict):
 # ---------------------------------------------------------
 # History Retrieval Endpoint
 # ---------------------------------------------------------
+
 @app.get("/history")
 def get_history():
     return load_history()

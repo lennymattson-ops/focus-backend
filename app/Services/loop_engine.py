@@ -12,40 +12,91 @@ def closed_loop(
     completed: bool
 ):
     """
-    Phase 9 Closed Loop Engine:
-    - Computes state shift
-    - Computes intervention effectiveness
-    - Returns loop result for history, dashboard, and optimizer.
+    Phase 10 Closed Loop Engine
+
+    Responsibilities:
+    - Compute state shift
+    - Compute intervention effectiveness
+    - Update effectiveness history
+    - Return synchronized loop result
     """
 
-    # Compute state shift
+    # --------------------------------------------------
+    # State Shift
+    # --------------------------------------------------
+
     state_shift = {
-        "motivation_change": current_state.get("motivation", 0) - previous_state.get("motivation", 0),
-        "energy_change": current_state.get("energy", 0) - previous_state.get("energy", 0),
-        "consistency_change": current_state.get("consistency", 0) - previous_state.get("consistency", 0),
-        "risk_change": current_state.get("risk", 0) - previous_state.get("risk", 0),
+        "motivation_change":
+            current_state.get("motivation", 0)
+            - previous_state.get("motivation", 0),
+
+        "energy_change":
+            current_state.get("energy", 0)
+            - previous_state.get("energy", 0),
+
+        "consistency_change":
+            current_state.get("consistency", 0)
+            - previous_state.get("consistency", 0),
+
+        "risk_change":
+            current_state.get("risk", 0)
+            - previous_state.get("risk", 0),
     }
 
-    # Compute simple intervention effectiveness score
+    # --------------------------------------------------
+    # Intervention Effectiveness
+    # --------------------------------------------------
+
     effectiveness_score = (
-        state_shift["motivation_change"] +
-        state_shift["energy_change"] +
-        state_shift["consistency_change"] -
-        state_shift["risk_change"]
+        state_shift["motivation_change"]
+        + state_shift["energy_change"]
+        + state_shift["consistency_change"]
+        - state_shift["risk_change"]
     )
+
+    effectiveness_score = round(
+        effectiveness_score,
+        3
+    )
+
+    # --------------------------------------------------
+    # Synchronize Effectiveness History
+    # --------------------------------------------------
+
+    updated_effectiveness_history = {
+        "overall": effectiveness_score,
+        "selected_intervention":
+            selected_intervention.get(
+                "name",
+                None
+            )
+    }
+
+    # --------------------------------------------------
+    # Loop Result
+    # --------------------------------------------------
 
     loop_result = {
         "state_shift": state_shift,
-        "intervention_effectiveness": round(effectiveness_score, 3),
 
-        # Phase 9 required fields
+        "intervention_effectiveness":
+            effectiveness_score,
+
         "decision": decision,
-        "outcome": outcome,
-        "interventions": interventions,
-        "effectiveness_history": effectiveness_history,
-        "selected_intervention": selected_intervention,
 
-        "completed": completed
+        "outcome": outcome,
+
+        "interventions":
+            interventions,
+
+        "effectiveness_history":
+            updated_effectiveness_history,
+
+        "selected_intervention":
+            selected_intervention,
+
+        "completed":
+            completed
     }
 
     return loop_result
