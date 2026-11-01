@@ -79,6 +79,35 @@ def compute_effectiveness_trend(
     return classify_delta(delta)
 
 
+def compute_risk_trend(
+    risk_values: List[float],
+) -> str:
+    """
+    Phase 10.7
+
+    Risk should react quickly.
+
+    Large risk swings should immediately
+    influence intervention selection.
+
+    Example:
+
+    0.1 -> 0.8 = increasing
+
+    0.8 -> 0.2 = decreasing
+    """
+
+    if len(risk_values) < 2:
+        return "stable"
+
+    delta = (
+        risk_values[-1]
+        - risk_values[-2]
+    )
+
+    return classify_delta(delta)
+
+
 def detect_behavioral_drift(
     history: List[Dict],
 ) -> Dict:
@@ -138,7 +167,7 @@ def detect_behavioral_drift(
             ),
 
         "risk":
-            compute_trend(
+            compute_risk_trend(
                 risk_values
             ),
 
