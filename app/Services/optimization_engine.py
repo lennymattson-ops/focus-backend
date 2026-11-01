@@ -172,6 +172,7 @@ def drift_aware_score(
     - Weight
     - Confidence
     - Fatigue
+    -Contextual Weighting
     - Drift bonuses
     - Decision alignment bonuses
     """
@@ -218,7 +219,49 @@ def drift_aware_score(
         "tags",
         []
     )
+    # -------------------------------------------------
+    # Phase 12.0
+    # Contextual Weighting
+    # -------------------------------------------------
 
+    if analysis:
+
+        risks = analysis.get(
+            "risks",
+            []
+        )
+
+        # Low motivation context
+        if (
+            "Low motivation" in risks
+            and "motivation_support" in tags
+        ):
+            score += 0.20
+
+        # Low energy context
+        if (
+            "Low energy" in risks
+            and "energy_support" in tags
+        ):
+            score += 0.20
+
+        # Consistency problem context
+        if (
+            "Inconsistent behavior" in risks
+            and (
+                "routine" in tags
+                or
+                "consistency_support" in tags
+            )
+        ):
+            score += 0.20
+
+        # Risk problem context
+        if (
+            "High risk" in risks
+            and "risk_reduction" in tags
+        ):
+            score += 0.20
     # -------------------------
     # Drift Bonuses
     # -------------------------
@@ -254,58 +297,7 @@ def drift_aware_score(
         "intervention_fatigue"
     ):
         score -= 0.15
-
-    # -------------------------
-    # Decision Alignment
-    # -------------------------
-
-    if analysis:
-
-        risks = analysis.get(
-            "risks",
-            []
-        )
-
-        if (
-            "Low motivation"
-            in risks
-            and
-            "motivation_support"
-            in tags
-        ):
-            score += 0.15
-
-        if (
-            "Low energy"
-            in risks
-            and
-            "energy_support"
-            in tags
-        ):
-            score += 0.15
-
-        if (
-            "Inconsistent behavior"
-            in risks
-            and (
-                "routine"
-                in tags
-                or
-                "consistency_support"
-                in tags
-            )
-        ):
-            score += 0.15
-
-        if (
-            "High risk"
-            in risks
-            and
-            "risk_reduction"
-            in tags
-        ):
-            score += 0.15
-
+ 
     return score
 
 def select_intervention(
