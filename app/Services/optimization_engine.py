@@ -1,4 +1,7 @@
 from typing import List, Dict
+from app.Services.context_memory import (
+    get_context_score
+    )
 import random
 
 from app.Services.drift_detector import detect_behavioral_drift
@@ -71,6 +74,27 @@ def update_intervention_weights(
                 overall * learning_rate
             )
 
+            # -------------------------------------------------
+            # Phase 13.4
+            # Contextual Weight Learning
+            # -------------------------------------------------
+
+            context_learning_score = (
+                intervention.get(
+                    "context_learning_score",
+                    0
+                )
+            )
+            print(
+                "CXT:",
+                intervention["name"],
+                context_learning_score
+            )
+
+            adjustment += (
+                context_learning_score * 0.02
+            )
+
             new_weight = (
                 current_weight
                 + adjustment
@@ -85,8 +109,6 @@ def update_intervention_weights(
                 overall * 0.05
             )
 
-            # Strong outcomes should
-            # produce stronger confidence shifts.
             if abs(overall) >= 1.5:
                 confidence_delta *= 1.25
 
@@ -108,22 +130,22 @@ def update_intervention_weights(
         # Starvation Protection
         # -------------------------------------------------
 
-        new_weight = max(
+    new_weight = max(
             MIN_WEIGHT_FLOOR,
             min(new_weight, 1.0)
         )
 
-        new_confidence = max(
+    new_confidence = max(
             -0.25,
             min(new_confidence, 0.25)
         )
 
-        new_fatigue = min(
+    new_fatigue = min(
             new_fatigue,
             10
         )
 
-        updated.append({
+    updated.append({
             **intervention,
             "weight": round(
                 new_weight,
@@ -219,6 +241,31 @@ def drift_aware_score(
         "tags",
         []
     )
+    # -------------------------------------------------
+    # Phase 13.2
+    # Context Learning Memory
+    # -------------------------------------------------
+
+    if analysis:
+
+        risks = analysis.get(
+            "risks",
+            []
+        )
+
+        for risk in risks:
+
+            context_score = (
+                get_context_score(
+                    risk,
+                    intervention["name"]
+                )
+            )
+
+            score += (
+                context_score * 0.10
+            )
+
     # -------------------------------------------------
     # Phase 12.0
     # Contextual Weighting
@@ -361,10 +408,31 @@ def optimize(
     Phase 10.9 Optimization Pipeline
     """
 
-    updated = update_intervention_weights(
-        interventions,
-        effectiveness_history,
-    )
+    if decision_analysis:
+
+        risks = decision_analysis.get(
+            "risks",
+            []
+        )
+
+        enriched = []
+
+        for intervention in interventions:
+
+            context_learning_score = (
+                get_context_learning_score(
+                    risks,
+                    intervention["name"]
+                )
+            )
+
+            enriched.append({
+                **intervention,
+                "context_learning_score":
+                    context_learning_score
+            })
+
+        interventions = enriched
 
     drift = detect_behavioral_drift(
         full_history or []

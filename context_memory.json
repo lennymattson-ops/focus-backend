@@ -1,0 +1,93 @@
+{
+    "Inconsistent behavior": {
+        "Micro Habit": [
+            -0.8
+        ],
+        "Energy Reset": [
+            -1.7,
+            -1.5,
+            -1.6,
+            -1.6,
+            1.2,
+            -0.2,
+            -0.9,
+            -0.5
+        ],
+        "Risk Reduction": [
+            -1.5,
+            -0.3
+        ],
+        "Reflection": [
+            -0.6,
+            -0.5
+        ],
+        "Planning": [
+            0.2,
+            0.2
+        ]
+    },
+    "Low motivation": {
+        "Energy Reset": [
+            -1.7,
+            -0.7,
+            -0.6,
+            -1.5,
+            -1.6,
+            -1.6,
+            -0.9,
+            0.5
+        ],
+        "Risk Reduction": [
+            -1.5
+        ],
+        "Motivation Boost": [
+            0.4
+        ],
+        "Reflection": [
+            -0.5
+        ]
+    },
+    "Low energy": {
+        "Energy Reset": [
+            -1.7,
+            -1.2,
+            -1.5,
+            -1.6,
+            1.8,
+            -1.6,
+            -0.9
+        ],
+        "Risk Reduction": [
+            -1.5
+        ],
+        "Planning": [
+            0.2
+        ]
+    },
+    "High risk": {
+        "Risk Reduction": [
+            -1.5,
+            -0.3
+        ],
+        "Energy Reset": [
+            -0.7,
+            -0.5,
+            -1.5,
+            -1.6,
+            1.8,
+            -1.6,
+            1.2,
+            -0.9,
+            -0.5
+        ],
+        "Planning": [
+            0.0,
+            0.2,
+            -0.6,
+            0.2
+        ],
+        "Reflection": [
+            -0.5
+        ]
+    }
+}

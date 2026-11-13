@@ -13,6 +13,9 @@ from app.Services.interventions import INTERVENTIONS
 
 # Behavioral Memory Store
 from app.Services.history_store import append_record, load_history
+from app.Services.context_memory import (
+    record_context_outcome
+)
 
 from datetime import datetime
 
@@ -155,7 +158,47 @@ def loop_endpoint(data: dict):
         selected_intervention,
         completed,
     )
+    # -------------------------------------------------
+    # Phase 13.3
+    # Context Learning Persistence
+    # -------------------------------------------------
 
+    risks = (
+        decision.get(
+            "analysis",
+            {}
+        ).get(
+            "risks",
+            []
+        )
+    )
+
+    intervention_name = (
+        selected_intervention.get(
+            "name"
+        )
+    )
+
+    effectiveness_score = (
+        loop_result.get(
+            "intervention_effectiveness",
+            0
+        )
+    )
+    print("RISKS:", risks)
+    print("DECISION:", decision)
+    print("INTERVENTION:", intervention_name)
+    print("EFFECTIVENESS:", effectiveness_score)
+
+    if (
+        risks
+        and intervention_name
+    ):
+        record_context_outcome(
+            risks,
+            intervention_name,
+            effectiveness_score
+        )
     # Save synchronized history record
     record = {
         "timestamp": datetime.now().isoformat(),
