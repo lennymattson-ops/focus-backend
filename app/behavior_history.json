@@ -1,0 +1,274 @@
+[
+  {
+    "timestamp": "2026-11-13T16:32:29.040138",
+    "previous_state": {
+      "motivation": 0.1,
+      "energy": 0.1,
+      "consistency": 0.2,
+      "risk": 0.9,
+      "flags": {
+        "low_motivation": true,
+        "low_energy": true,
+        "inconsistent": true,
+        "high_risk": true
+      }
+    },
+    "current_state": {
+      "motivation": 0.6,
+      "energy": 0.3,
+      "consistency": 0.2,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": true,
+        "high_risk": false
+      }
+    },
+    "decision": {
+      "analysis": {
+        "risks": [
+          "Inconsistent behavior"
+        ],
+        "opportunities": []
+      },
+      "recommended_intervention": "Choose a tiny habit you can complete in under 3 minutes."
+    },
+    "outcome": {
+      "numeric_score": 0.25,
+      "category": "Improvement",
+      "compliance_score": 0.2
+    },
+    "selected_intervention": {
+      "name": "Planning",
+      "description": "Create a simple plan for the next 2\u20133 hours.",
+      "weight": 1,
+      "tags": [
+        "routine",
+        "risk_reduction"
+      ],
+      "confidence": -0.08,
+      "fatigue": 3,
+      "context_learning_score": -0.3333333333333333
+    },
+    "updated_interventions": [
+      {
+        "name": "Planning",
+        "description": "Create a simple plan for the next 2\u20133 hours.",
+        "weight": 1,
+        "tags": [
+          "routine",
+          "risk_reduction"
+        ],
+        "confidence": -0.08,
+        "fatigue": 3,
+        "context_learning_score": -0.3333333333333333
+      }
+    ],
+    "effectiveness_history": {
+      "overall": 1.1,
+      "selected_intervention": "Planning"
+    },
+    "drift": {
+      "motivation": "stable",
+      "energy": "stable",
+      "consistency": "stable",
+      "risk": "stable",
+      "effectiveness": "stable",
+      "intervention_fatigue": false
+    },
+    "loop_result": {
+      "state_shift": {
+        "motivation_change": 0.5,
+        "energy_change": 0.19999999999999998,
+        "consistency_change": 0.0,
+        "risk_change": -0.4
+      },
+      "intervention_effectiveness": 1.1,
+      "decision": {
+        "analysis": {
+          "risks": [
+            "Inconsistent behavior"
+          ],
+          "opportunities": []
+        },
+        "recommended_intervention": "Choose a tiny habit you can complete in under 3 minutes."
+      },
+      "outcome": {
+        "numeric_score": 0.25,
+        "category": "Improvement",
+        "compliance_score": 0.2
+      },
+      "interventions": [
+        {
+          "name": "Planning",
+          "description": "Create a simple plan for the next 2\u20133 hours.",
+          "weight": 1,
+          "tags": [
+            "routine",
+            "risk_reduction"
+          ],
+          "confidence": -0.08,
+          "fatigue": 3,
+          "context_learning_score": -0.3333333333333333
+        }
+      ],
+      "effectiveness_history": {
+        "overall": 1.1,
+        "selected_intervention": "Planning"
+      },
+      "selected_intervention": {
+        "name": "Planning",
+        "description": "Create a simple plan for the next 2\u20133 hours.",
+        "weight": 1,
+        "tags": [
+          "routine",
+          "risk_reduction"
+        ],
+        "confidence": -0.08,
+        "fatigue": 3,
+        "context_learning_score": -0.3333333333333333
+      },
+      "completed": true
+    }
+  },
+  {
+    "timestamp": "2026-11-13T16:32:46.523862",
+    "previous_state": {
+      "motivation": 0.6,
+      "energy": 0.3,
+      "consistency": 0.2,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": true,
+        "high_risk": false
+      }
+    },
+    "current_state": {
+      "motivation": 0.1,
+      "energy": 0.1,
+      "consistency": 0.1,
+      "risk": 0.9,
+      "flags": {
+        "low_motivation": true,
+        "low_energy": true,
+        "inconsistent": true,
+        "high_risk": true
+      }
+    },
+    "decision": {
+      "analysis": {
+        "risks": [
+          "Low motivation",
+          "Low energy",
+          "Inconsistent behavior",
+          "High risk"
+        ],
+        "opportunities": []
+      },
+      "recommended_intervention": "Reduce friction. Remove one obstacle or distraction before starting work."
+    },
+    "outcome": {
+      "numeric_score": -0.28,
+      "category": "Regression",
+      "compliance_score": 0.1
+    },
+    "selected_intervention": {
+      "name": "Planning",
+      "description": "Create a simple plan for the next 2\u20133 hours.",
+      "weight": 1,
+      "tags": [
+        "routine",
+        "risk_reduction"
+      ],
+      "confidence": -0.017,
+      "fatigue": 4,
+      "context_learning_score": -0.57375
+    },
+    "updated_interventions": [
+      {
+        "name": "Planning",
+        "description": "Create a simple plan for the next 2\u20133 hours.",
+        "weight": 1,
+        "tags": [
+          "routine",
+          "risk_reduction"
+        ],
+        "confidence": -0.017,
+        "fatigue": 4,
+        "context_learning_score": -0.57375
+      }
+    ],
+    "effectiveness_history": {
+      "overall": -1.2,
+      "selected_intervention": "Planning"
+    },
+    "drift": {
+      "motivation": "stable",
+      "energy": "stable",
+      "consistency": "stable",
+      "risk": "stable",
+      "effectiveness": "stable",
+      "intervention_fatigue": false
+    },
+    "loop_result": {
+      "state_shift": {
+        "motivation_change": -0.5,
+        "energy_change": -0.19999999999999998,
+        "consistency_change": -0.1,
+        "risk_change": 0.4
+      },
+      "intervention_effectiveness": -1.2,
+      "decision": {
+        "analysis": {
+          "risks": [
+            "Low motivation",
+            "Low energy",
+            "Inconsistent behavior",
+            "High risk"
+          ],
+          "opportunities": []
+        },
+        "recommended_intervention": "Reduce friction. Remove one obstacle or distraction before starting work."
+      },
+      "outcome": {
+        "numeric_score": -0.28,
+        "category": "Regression",
+        "compliance_score": 0.1
+      },
+      "interventions": [
+        {
+          "name": "Planning",
+          "description": "Create a simple plan for the next 2\u20133 hours.",
+          "weight": 1,
+          "tags": [
+            "routine",
+            "risk_reduction"
+          ],
+          "confidence": -0.017,
+          "fatigue": 4,
+          "context_learning_score": -0.57375
+        }
+      ],
+      "effectiveness_history": {
+        "overall": -1.2,
+        "selected_intervention": "Planning"
+      },
+      "selected_intervention": {
+        "name": "Planning",
+        "description": "Create a simple plan for the next 2\u20133 hours.",
+        "weight": 1,
+        "tags": [
+          "routine",
+          "risk_reduction"
+        ],
+        "confidence": -0.017,
+        "fatigue": 4,
+        "context_learning_score": -0.57375
+      },
+      "completed": true
+    }
+  }
+]

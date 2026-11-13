@@ -1,6 +1,7 @@
 from typing import List, Dict
 from app.Services.context_memory import (
-    get_context_score
+    get_context_score,
+    get_context_learning_score  
     )
 import random
 
@@ -92,7 +93,7 @@ def update_intervention_weights(
             )
 
             adjustment += (
-                context_learning_score * 0.02
+                context_learning_score * 0.10
             )
 
             new_weight = (
@@ -397,7 +398,6 @@ def select_intervention(
 
     return scored[0][0]
 
-
 def optimize(
     interventions: List[Dict],
     effectiveness_history: Dict[str, float],
@@ -405,7 +405,7 @@ def optimize(
     decision_analysis: Dict = None,
 ):
     """
-    Phase 10.9 Optimization Pipeline
+    Phase 13.4 Optimization Pipeline
     """
 
     if decision_analysis:
@@ -426,6 +426,12 @@ def optimize(
                 )
             )
 
+            print(
+                "CTX LEARN:",
+                intervention["name"],
+                context_learning_score
+            )
+
             enriched.append({
                 **intervention,
                 "context_learning_score":
@@ -433,6 +439,11 @@ def optimize(
             })
 
         interventions = enriched
+
+    updated = update_intervention_weights(
+        interventions,
+        effectiveness_history,
+    )
 
     drift = detect_behavioral_drift(
         full_history or []
