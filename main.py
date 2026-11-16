@@ -75,7 +75,6 @@ def decision_engine(data: dict):
 def outcome_engine(data: dict):
     return process_outcome(data)
 
-
 # ---------------------------------------------------------
 # Optimization Engine
 # ---------------------------------------------------------
@@ -108,8 +107,6 @@ def optimization_endpoint(data: dict):
     )
 
     return result
-
-
 # ---------------------------------------------------------
 # Closed Loop Engine + Behavioral Memory Append
 # ---------------------------------------------------------
