@@ -682,5 +682,86 @@
       "selected_intervention": {},
       "completed": true
     }
+  },
+  {
+    "timestamp": "2026-11-16T14:21:20.875824",
+    "previous_state": {
+      "motivation": 0.5,
+      "energy": 0.5,
+      "consistency": 0.5,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": false,
+        "high_risk": false
+      }
+    },
+    "current_state": {
+      "motivation": 0.5,
+      "energy": 0.5,
+      "consistency": 0.5,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": false,
+        "high_risk": false
+      }
+    },
+    "decision": {
+      "analysis": {
+        "risks": [],
+        "opportunities": []
+      },
+      "recommended_intervention": "Everything looks stable. Maintain your current routine."
+    },
+    "outcome": {
+      "numeric_score": 0,
+      "category": "No significant change",
+      "compliance_score": 0.5
+    },
+    "selected_intervention": {},
+    "updated_interventions": [],
+    "effectiveness_history": {
+      "overall": 0.0,
+      "selected_intervention": null
+    },
+    "drift": {
+      "motivation": "increasing",
+      "energy": "increasing",
+      "consistency": "increasing",
+      "risk": "stable",
+      "effectiveness": "increasing",
+      "intervention_fatigue": false
+    },
+    "loop_result": {
+      "state_shift": {
+        "motivation_change": 0.0,
+        "energy_change": 0.0,
+        "consistency_change": 0.0,
+        "risk_change": 0.0
+      },
+      "intervention_effectiveness": 0.0,
+      "decision": {
+        "analysis": {
+          "risks": [],
+          "opportunities": []
+        },
+        "recommended_intervention": "Everything looks stable. Maintain your current routine."
+      },
+      "outcome": {
+        "numeric_score": 0,
+        "category": "No significant change",
+        "compliance_score": 0.5
+      },
+      "interventions": [],
+      "effectiveness_history": {
+        "overall": 0.0,
+        "selected_intervention": null
+      },
+      "selected_intervention": {},
+      "completed": true
+    }
   }
 ]
