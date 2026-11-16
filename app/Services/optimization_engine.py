@@ -87,12 +87,6 @@ def update_intervention_weights(
                 )
             )
 
-            print(
-                "CXT:",
-                intervention["name"],
-                context_learning_score
-            )
-
             adjustment += (
                 context_learning_score * 0.10
             )
@@ -427,12 +421,6 @@ def optimize(
                 )
             )
 
-            print(
-                "CTX LEARN:",
-                intervention["name"],
-                context_learning_score
-            )
-
             enriched.append({
                 **intervention,
                 "context_learning_score":
@@ -454,28 +442,6 @@ def optimize(
         updated,
         drift,
         decision_analysis,
-    )
-
-    print(
-    "UPDATED COUNT:",
-    len(updated)
-    )
-
-    print("INTERVENTIONS IN:",
-          len(interventions))
-    
-    print("INTERVENTION NAMES IN:",
-          [
-              i["name"]
-              for i in interventions
-          ])
-    
-    print(
-    "UPDATED NAMES:",
-    [
-        i["name"]
-        for i in updated
-    ]
     )
 
     return {

@@ -1,7 +1,6 @@
 import json
 import os
 
-print("CONTEXT MEMORY MODULE LOADED")
 
 CONTEXT_MEMORY_FILE = "context_memory.json"
 MAX_HISTORY_PER_CONTEXT = 20
