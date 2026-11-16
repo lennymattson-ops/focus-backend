@@ -144,6 +144,16 @@ def loop_endpoint(data: dict):
         False
     )
 
+    print(
+        "SELECTED INTERVENTION ENTERING LOOP:",
+        selected_intervention
+    )
+
+    print(
+        "INTERVENTIONS ENTERING LOOP:",
+        len(interventions)
+    )
+
     # Run Closed Loop Engine
     loop_result = closed_loop(
         previous_state,
