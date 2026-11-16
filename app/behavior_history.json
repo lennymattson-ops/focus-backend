@@ -601,5 +601,86 @@
       "selected_intervention": {},
       "completed": true
     }
+  },
+  {
+    "timestamp": "2026-11-16T14:17:27.609071",
+    "previous_state": {
+      "motivation": 0.5,
+      "energy": 0.8,
+      "consistency": 0.1,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": true,
+        "high_risk": false
+      }
+    },
+    "current_state": {
+      "motivation": 0.5,
+      "energy": 0.5,
+      "consistency": 0.5,
+      "risk": 0.5,
+      "flags": {
+        "low_motivation": false,
+        "low_energy": false,
+        "inconsistent": false,
+        "high_risk": false
+      }
+    },
+    "decision": {
+      "analysis": {
+        "risks": [],
+        "opportunities": []
+      },
+      "recommended_intervention": "Everything looks stable. Maintain your current routine."
+    },
+    "outcome": {
+      "numeric_score": 0.03,
+      "category": "No significant change",
+      "compliance_score": 0.5
+    },
+    "selected_intervention": {},
+    "updated_interventions": [],
+    "effectiveness_history": {
+      "overall": 0.1,
+      "selected_intervention": null
+    },
+    "drift": {
+      "motivation": "increasing",
+      "energy": "increasing",
+      "consistency": "stable",
+      "risk": "increasing",
+      "effectiveness": "decreasing",
+      "intervention_fatigue": false
+    },
+    "loop_result": {
+      "state_shift": {
+        "motivation_change": 0.0,
+        "energy_change": -0.30000000000000004,
+        "consistency_change": 0.4,
+        "risk_change": 0.0
+      },
+      "intervention_effectiveness": 0.1,
+      "decision": {
+        "analysis": {
+          "risks": [],
+          "opportunities": []
+        },
+        "recommended_intervention": "Everything looks stable. Maintain your current routine."
+      },
+      "outcome": {
+        "numeric_score": 0.03,
+        "category": "No significant change",
+        "compliance_score": 0.5
+      },
+      "interventions": [],
+      "effectiveness_history": {
+        "overall": 0.1,
+        "selected_intervention": null
+      },
+      "selected_intervention": {},
+      "completed": true
+    }
   }
 ]
