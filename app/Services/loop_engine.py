@@ -59,17 +59,19 @@ def closed_loop(
         3
     )
 
-    # --------------------------------------------------
-    # Synchronize Effectiveness History
-    # --------------------------------------------------
+# --------------------------------------------------
+# Synchronize Effectiveness History
+# --------------------------------------------------
+
+    if selected_intervention is None:
+        selected_intervention = {}
 
     updated_effectiveness_history = {
         "overall": effectiveness_score,
-        "selected_intervention":
-            selected_intervention.get(
-                "name",
-                None
-            )
+        "selected_intervention": ( selected_intervention.get("name")
+        if selected_intervention
+        else None
+        )
     }
 
     # --------------------------------------------------
