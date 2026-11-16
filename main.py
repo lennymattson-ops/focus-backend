@@ -170,10 +170,13 @@ def loop_endpoint(data: dict):
         )
     )
 
-    intervention_name = (
-        selected_intervention.get(
-            "name"
-        )
+# Prevent crash when no intervention was selected
+
+    if selected_intervention is None:
+            selected_intervention = {}
+
+            intervention_name = selected_intervention.get(
+                "name"
     )
 
     effectiveness_score = (
