@@ -1,8 +1,10 @@
 import json
-import os
+from pathlib import Path
 
-
-CONTEXT_MEMORY_FILE = "context_memory.json"
+# Anchor to the app directory (like history_store) so the file
+# location does not depend on the working directory uvicorn
+# was launched from
+CONTEXT_MEMORY_FILE = Path(__file__).parent.parent / "context_memory.json"
 MAX_HISTORY_PER_CONTEXT = 20
 
 
@@ -14,9 +16,7 @@ def load_context_memory():
         dict
     """
 
-    if not os.path.exists(
-        CONTEXT_MEMORY_FILE
-    ):
+    if not CONTEXT_MEMORY_FILE.exists():
         return {}
 
     try:
@@ -40,9 +40,7 @@ def save_context_memory(memory):
 
     print(
         "CONTEXT MEMORY PATH:",
-        os.path.abspath(
-            CONTEXT_MEMORY_FILE
-        )
+        CONTEXT_MEMORY_FILE.resolve()
     )
 
     with open(

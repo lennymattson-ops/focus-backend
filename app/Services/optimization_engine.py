@@ -124,24 +124,29 @@ def update_intervention_weights(
         # -------------------------------------------------
         # Phase 10.8
         # Starvation Protection
+        # (applies to ALL interventions, including the
+        #  selected one - previously this block was
+        #  indented inside the else branch, which
+        #  dropped the selected intervention from the
+        #  updated list entirely)
         # -------------------------------------------------
 
-            new_weight = max(
+        new_weight = max(
             MIN_WEIGHT_FLOOR,
             min(new_weight, 1.0)
-           )
+        )
 
-            new_confidence = max(
+        new_confidence = max(
             -0.25,
             min(new_confidence, 0.25)
-          )
+        )
 
-            new_fatigue = min(
+        new_fatigue = min(
             new_fatigue,
             10
-          )
+        )
 
-            updated.append({
+        updated.append({
             **intervention,
             "weight": round(
                 new_weight,
@@ -152,7 +157,7 @@ def update_intervention_weights(
                 3
             ),
             "fatigue": new_fatigue
-          })
+        })
 
     total = sum(
         i["weight"]
