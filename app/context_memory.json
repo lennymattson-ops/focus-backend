@@ -1,0 +1,17 @@
+{
+    "Low motivation": {
+        "Motivation Boost": [
+            -1.3
+        ]
+    },
+    "Low energy": {
+        "Motivation Boost": [
+            -1.3
+        ]
+    },
+    "High risk": {
+        "Motivation Boost": [
+            -1.3
+        ]
+    }
+}
