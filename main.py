@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Engines
 import app.Services.state_engine as state_engine
 from app.Services.decision_engine import process_decision
-from app.Services.outcome_engine import process_outcome
+from app.Services.outcome_engine import process_outcome, compute_compliance
 from app.Services.optimization_engine import optimize
 from app.Services.loop_engine import closed_loop
 
@@ -188,6 +188,22 @@ def loop_endpoint(data: dict):
 
     intervention_name = selected_intervention.get("name")
 
+    # -------------------------------------------------
+    # Phase 14.0
+    # Compliance (Doc 3 - FIG. 9)
+    # "yes" / "partial" -> the user engaged with the
+    # intervention, so the outcome is real evidence.
+    #
+    # "no" -> the outcome says nothing about the
+    # intervention, so nothing may be learned from it.
+    # -------------------------------------------------
+
+    compliance = data.get("compliance", "no")
+
+    compliance_score = compute_compliance(
+        compliance
+    )
+
     effectiveness_score = (
         loop_result.get(
             "intervention_effectiveness",
@@ -198,10 +214,14 @@ def loop_endpoint(data: dict):
     print("DECISION:", decision)
     print("INTERVENTION:", intervention_name)
     print("EFFECTIVENESS:", effectiveness_score)
+    print("COMPLIANCE:", compliance)
 
+    # THE GATE: only compliant interventions may
+    # write to the contextual learning memory
     if (
         risks
         and intervention_name
+        and compliance in ("yes", "partial")
     ):
         record_context_outcome(
             risks,
@@ -235,8 +255,15 @@ def loop_endpoint(data: dict):
 
         "drift": drift,
 
+        "compliance": compliance,
+
         "loop_result": loop_result,
     }
+
+    # Make compliance visible to the next optimization
+    # round (the frontend carries loop_result forward)
+    loop_result["compliance"] = compliance
+    loop_result["compliance_score"] = compliance_score
 
     append_record(record)
 

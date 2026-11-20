@@ -46,12 +46,48 @@ def classify_outcome(score):
 
     return "Strong regression"
 
-def measure_compliance(data):
-    current_state = data.get("current_state", {})
+# ---------------------------------------------------------
+# Phase 14.0
+# Compliance Tracking (Doc 3 - FIG. 9)
+# ---------------------------------------------------------
 
-    return round(
-        current_state.get("consistency", 0),
-        2
+def compute_compliance(answer):
+    """
+    Convert the user's answer to "Did you try the
+    suggested intervention?" into a score.
+
+    "yes"     -> 1.0  (did the intervention)
+    "partial" -> 0.5  (did some of it)
+    "no"      -> 0.0  (did not do it)
+
+    Any unexpected value falls back to 0.0 so a
+    bad payload can never crash the loop.
+    """
+
+    mapping = {
+        "yes": 1.0,
+        "partial": 0.5,
+        "no": 0.0,
+    }
+
+    return mapping.get(
+        str(answer).lower().strip(),
+        0.0,
+    )
+
+
+def measure_compliance(data):
+    """
+    Real compliance measurement based on the user's
+    answer (Doc 3 - Behavioral Compliance Measurement).
+
+    Previously this faked compliance by returning the
+    current consistency score, which had nothing to do
+    with whether the user actually did the intervention.
+    """
+
+    return compute_compliance(
+        data.get("compliance", "no")
     )
 
 def process_outcome(data):

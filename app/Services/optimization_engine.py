@@ -43,6 +43,14 @@ def update_intervention_weights(
         "selected_intervention"
     )
 
+    # Phase 14.0: did the user actually do the selected
+    # intervention? Old payloads without this field are
+    # treated as compliant so nothing breaks.
+    complied = effectiveness_history.get(
+        "complied",
+        True
+    )
+
     for intervention in interventions:
 
         current_weight = intervention.get(
@@ -60,6 +68,11 @@ def update_intervention_weights(
             0
         )
 
+        current_skipped = intervention.get(
+            "skipped",
+            0
+        )
+
         new_weight = current_weight
 
         # Confidence decay
@@ -69,49 +82,77 @@ def update_intervention_weights(
 
         new_fatigue = current_fatigue
 
+        # Skip count carries forward unchanged unless this
+        # intervention was selected (then it depends on compliance)
+        new_skipped = current_skipped
+
         if intervention["name"] == selected_name:
 
-            adjustment = (
-                overall * learning_rate
-            )
-
-            # -------------------------------------------------
-            # Phase 13.4
-            # Contextual Weight Learning
-            # -------------------------------------------------
-
-            context_learning_score = (
-                intervention.get(
-                    "context_learning_score",
-                    0
-                )
-            )
-
-            adjustment += (
-                context_learning_score * 0.10
-            )
-
-            new_weight = (
-                current_weight
-                + adjustment
-            )
-
-            # -------------------------------------------------
-            # Phase 10.9
-            # Confidence Momentum
-            # -------------------------------------------------
-
-            confidence_delta = (
-                overall * 0.05
-            )
-
-            if abs(overall) >= 1.5:
-                confidence_delta *= 1.25
-
-            new_confidence += confidence_delta
-
-            # Fatigue build-up
+            # Fatigue builds on DELIVERY, so it applies
+            # whether or not the user complied
             new_fatigue += 1
+
+            if complied:
+
+                new_skipped = max(
+                    0,
+                    current_skipped - 1
+                )
+
+                adjustment = (
+                    overall * learning_rate
+                )
+
+                # -------------------------------------------------
+                # Phase 13.4
+                # Contextual Weight Learning
+                # -------------------------------------------------
+
+                context_learning_score = (
+                    intervention.get(
+                        "context_learning_score",
+                        0
+                    )
+                )
+
+                adjustment += (
+                    context_learning_score * 0.10
+                )
+
+                new_weight = (
+                    current_weight
+                    + adjustment
+                )
+
+                # -------------------------------------------------
+                # Phase 10.9
+                # Confidence Momentum
+                # -------------------------------------------------
+
+                confidence_delta = (
+                    overall * 0.05
+                )
+
+                if abs(overall) >= 1.5:
+                    confidence_delta *= 1.25
+
+                new_confidence += confidence_delta
+
+            else:
+
+                # -------------------------------------------------
+                # Phase 14.0
+                # Skipped: the observed outcome is NOT
+                # attributable to this intervention, so its
+                # effectiveness must NOT touch the weight or
+                # confidence. Only the skip counter moves -
+                # it lowers selection priority separately.
+                # -------------------------------------------------
+
+                new_skipped = min(
+                    current_skipped + 1,
+                    10
+                )
 
         else:
 
@@ -156,7 +197,8 @@ def update_intervention_weights(
                 new_confidence,
                 3
             ),
-            "fatigue": new_fatigue
+            "fatigue": new_fatigue,
+            "skipped": new_skipped
         })
 
     total = sum(
@@ -226,6 +268,24 @@ def drift_aware_score(
     if fatigue >= 7:
         fatigue_penalty += 0.35
 
+    # -------------------------------------------------
+    # Phase 14.0
+    # Skip Penalty
+    #
+    # An intervention the user keeps ignoring loses
+    # selection priority - but this is deliberately
+    # SEPARATE from effectiveness learning: skipping
+    # says nothing about whether the intervention
+    # works, only about its friction.
+    # -------------------------------------------------
+
+    skipped = intervention.get(
+        "skipped",
+        0
+    )
+
+    skip_penalty = skipped * 0.05
+
     score = (
         intervention.get(
             "weight",
@@ -236,6 +296,7 @@ def drift_aware_score(
             0
         )
         - fatigue_penalty
+        - skip_penalty
     )
 
     tags = intervention.get(
