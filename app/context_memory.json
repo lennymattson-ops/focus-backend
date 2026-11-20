@@ -1,0 +1,43 @@
+{
+    "Low motivation": {
+        "Reflection": [
+            -1.3
+        ],
+        "Planning": [
+            -1.8
+        ],
+        "Micro Habit": [
+            0.2
+        ]
+    },
+    "Low energy": {
+        "Reflection": [
+            -1.3
+        ],
+        "Planning": [
+            2.3,
+            -1.8
+        ],
+        "Micro Habit": [
+            -0.6
+        ]
+    },
+    "Inconsistent behavior": {
+        "Reflection": [
+            -1.3
+        ],
+        "Planning": [
+            0.0,
+            -1.8
+        ],
+        "Micro Habit": [
+            -0.6,
+            0.2
+        ]
+    },
+    "High risk": {
+        "Planning": [
+            -1.8
+        ]
+    }
+}

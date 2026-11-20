@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.checkin_api import router as checkin_router
+   
 
 # Engines
 import app.Services.state_engine as state_engine
@@ -20,6 +22,7 @@ from app.Services.context_memory import (
 from datetime import datetime
 
 app = FastAPI()
+app.include_router(checkin_router)
 
 # ---------------------------------------------------------
 # CORS
