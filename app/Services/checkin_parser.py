@@ -24,10 +24,14 @@ RULES = {
             "i'm exhausted", "i am exhausted", "i feel exhausted", "i'm tired",
             "i am tired", "i feel tired", "i barely slept", "barely slept",
             "i have no energy", "i feel drained",
+            "my energy is low", "my energy is very low", "my energy is really low",
+            "my energy is at zero", "i have low energy", "i have very low energy",
+            "i have zero energy", "i'm running on zero energy",
         ),
         8: (
             "i slept well", "i feel rested", "i'm well rested",
             "i feel energized", "i'm energized", "i have plenty of energy",
+            "my energy is high", "my energy is very high", "i have lots of energy",
         ),
     },
     "consistency": {
@@ -95,7 +99,7 @@ def parse_checkin(text: str) -> dict:
         )
 
     return {
-        "parser_version": "rules-v1",
+        "parser_version": "rules-v1.1",
         "scores": scores,
         "status": status,
         "evidence": evidence,
